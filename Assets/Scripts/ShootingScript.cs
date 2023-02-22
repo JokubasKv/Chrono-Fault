@@ -10,6 +10,9 @@ public class ShootingScript : MonoBehaviour
     [SerializeField] private Transform rotationPoint;
     [SerializeField] private Transform shootPoint;
     [SerializeField] private GameObject bullet;
+    [SerializeField] public float shootPower;
+
+    [SerializeField] public bool inheritMovement;
 
     PlayerInput inputActions;
     Rigidbody2D rb;
@@ -37,9 +40,13 @@ public class ShootingScript : MonoBehaviour
         rb.MoveRotation(angle);
     }
 
-    private int Shoot()
+    private void Shoot()
     {
-        throw new NotImplementedException();
+        GameObject gameObject = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+        Rigidbody2D rbG = gameObject.GetComponent<Rigidbody2D>();
+        Vector2 direction = shootPoint.position - rotationPoint.position;
+
+        rbG.AddForce(direction * shootPower + (inheritMovement ? Vector2.zero : Vector2.zero), ForceMode2D.Impulse);
     }
     #endregion
 }
