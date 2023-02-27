@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
 {
@@ -11,6 +12,10 @@ public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
     [SerializeField] private int corridorCount = 5;
 
     [SerializeField] [Range(0f,1f)] public float roomPercent = 0.6f;
+
+    private Dictionary<Vector2Int, HashSet<Vector2Int>> roomsDictionary = new();
+    private HashSet<Vector2Int> floorPositions;
+    private HashSet<Vector2Int> corridorPositions;
 
     protected override void RunProceduralGeneration()
     {
@@ -74,14 +79,26 @@ public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
         HashSet<Vector2Int> roomPositions = new();
         var roomsToCreateCount = Mathf.RoundToInt(potentialRoomPositions.Count * roomPercent);
 
-        List<Vector2Int> roomsToCreate = potentialRoomPositions.OrderBy(x => Guid.NewGuid()).Take(roomsToCreateCount).ToList();
-
+        List<Vector2Int> roomsToCreate = potentialRoomPositions.OrderBy(x => Random.Range(0,6)).Take(roomsToCreateCount).ToList();
+        ClearRoomData();
         foreach (var roomPosition in roomsToCreate)
         {
             var roomFloor = RunRandomWalk(roomPosition, randomWalkData);
+
+            SaveRoomData(roomPosition, roomFloor);
             roomPositions.UnionWith(roomFloor);
         }
         return roomPositions;
+    }
+
+    private void ClearRoomData()
+    {
+        roomsDictionary.Clear();
+    }
+
+    private void SaveRoomData(Vector2Int roomPosition, HashSet<Vector2Int> roomFloor)
+    {
+        roomsDictionary[roomPosition] = roomFloor;
     }
 
     private void CreateCorridors(HashSet<Vector2Int> floorPositions, HashSet<Vector2Int> potentialRoomPositions)
@@ -95,5 +112,6 @@ public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
             floorPositions.UnionWith(path);
             potentialRoomPositions.Add(currentPosition);
         }
+        corridorPositions = new HashSet<Vector2Int>(floorPositions);
     }
 }
