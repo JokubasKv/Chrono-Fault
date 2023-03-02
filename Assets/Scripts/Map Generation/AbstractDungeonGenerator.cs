@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AbstractDungeonGenerator : MonoBehaviour
+public abstract class AbstractMapGenerator : MonoBehaviour
 {
     [SerializeField] protected TilemapVisualizer tilemapVisualizer = null;
     [SerializeField] public Vector2Int startPosition = Vector2Int.zero;

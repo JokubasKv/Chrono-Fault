@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class SimpleRandomWalkMapGenerator : AbstractDungeonGenerator
+public class SimpleRandomWalkMapGenerator : AbstractMapGenerator
 {
     [SerializeField] protected SimpleRandomWalkData randomWalkData;
 

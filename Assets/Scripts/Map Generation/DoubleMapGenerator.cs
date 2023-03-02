@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoubleMapGenerator : AbstractDungeonGenerator
+public class DoubleMapGenerator : AbstractMapGenerator
 {
     [SerializeField] private Vector2Int offSet = new Vector2Int(0,360);
 
-    [SerializeReference] AbstractDungeonGenerator FutureMapGenerator;
-    [SerializeReference] AbstractDungeonGenerator PresentMapGenerator;
+    [SerializeReference] AbstractMapGenerator FutureMapGenerator;
+    [SerializeReference] AbstractMapGenerator PresentMapGenerator;
     [SerializeField] Seed seed;
 
     protected override void RunProceduralGeneration()

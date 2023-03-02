@@ -5,13 +5,15 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
+public class CorridorFirstMapGenerator : AbstractMapGenerator
 {
 
     [SerializeField] private int corridorLength = 14;
     [SerializeField] private int corridorCount = 5;
 
     [SerializeField] [Range(0f,1f)] public float roomPercent = 0.6f;
+
+    [SerializeReference] public AbstractMapGenerator roomGenerator;
 
     private Dictionary<Vector2Int, HashSet<Vector2Int>> roomsDictionary = new();
     private HashSet<Vector2Int> floorPositions;
@@ -47,7 +49,7 @@ public class CorridorFirstMapGenerator : SimpleRandomWalkMapGenerator
         {
             if(roomFloors.Contains(position) == false)
             {
-                var room = RunRandomWalk(position, randomWalkData);
+                var room = roomGenerator.GenerateDungeon();
                 roomFloors.UnionWith(room);
             }
         }

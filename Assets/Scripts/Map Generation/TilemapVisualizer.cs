@@ -18,7 +18,7 @@ public class TilemapVisualizer : MonoBehaviour
 
     [SerializeField] private TileBase wallInnerCornerDownLeft;
     [SerializeField] private TileBase wallInnerCornerDownRight;
-    [SerializeField] private TileBase wallDiagonaCornerlDownLeft;
+    [SerializeField] private TileBase wallDiagonalCornerlDownLeft;
     [SerializeField] private TileBase wallDiagonalCornerDownRight;
     [SerializeField] private TileBase wallDiagonalCornerUpLeft;
     [SerializeField] private TileBase wallDiagonalCornerUpRight;
@@ -85,7 +85,7 @@ public class TilemapVisualizer : MonoBehaviour
         TileBase tile = null;
         if (WallTypesHelper.wallDiagonalCornerDownLeft.Contains(typeAsInt))
         {
-            tile = wallDiagonaCornerlDownLeft;
+            tile = wallDiagonalCornerlDownLeft;
         }
         else if (WallTypesHelper.wallDiagonalCornerDownRight.Contains(typeAsInt))
         {
@@ -107,7 +107,7 @@ public class TilemapVisualizer : MonoBehaviour
         {
             tile = wallInnerCornerDownRight;
         }
-        else if (WallTypesHelper.wallFull.Contains(typeAsInt))
+        else if (WallTypesHelper.wallFullEightDirections.Contains(typeAsInt))
         {
             tile = wallFull;
         }
