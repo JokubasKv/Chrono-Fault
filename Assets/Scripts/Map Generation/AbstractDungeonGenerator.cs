@@ -17,4 +17,6 @@ public abstract class AbstractMapGenerator : MonoBehaviour
     }
 
     protected abstract void RunProceduralGeneration();
+
+    public abstract HashSet<Vector2Int> GenerateFloor();
 }

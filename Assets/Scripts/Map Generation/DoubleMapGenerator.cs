@@ -11,6 +11,11 @@ public class DoubleMapGenerator : AbstractMapGenerator
     [SerializeReference] AbstractMapGenerator PresentMapGenerator;
     [SerializeField] Seed seed;
 
+    public override HashSet<Vector2Int> GenerateFloor()
+    {
+        throw new NotImplementedException();
+    }
+
     protected override void RunProceduralGeneration()
     {
         DoubleMapGeneration();

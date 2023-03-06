@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class CorridorFirstMapGenerator : AbstractMapGenerator
 {
 
     [SerializeField] private int corridorLength = 14;
+    [SerializeField] private int corridorWidth = 3;
     [SerializeField] private int corridorCount = 5;
 
     [SerializeField] [Range(0f,1f)] public float roomPercent = 0.6f;
@@ -49,7 +51,8 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         {
             if(roomFloors.Contains(position) == false)
             {
-                var room = roomGenerator.GenerateDungeon();
+                roomGenerator.startPosition = position;
+                var room = roomGenerator.GenerateFloor();
                 roomFloors.UnionWith(room);
             }
         }
@@ -85,7 +88,8 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         ClearRoomData();
         foreach (var roomPosition in roomsToCreate)
         {
-            var roomFloor = RunRandomWalk(roomPosition, randomWalkData);
+            roomGenerator.startPosition = roomPosition;
+            var roomFloor = roomGenerator.GenerateFloor();
 
             SaveRoomData(roomPosition, roomFloor);
             roomPositions.UnionWith(roomFloor);
@@ -109,11 +113,16 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         potentialRoomPositions.Add(currentPosition);
         for (int i = 0; i < corridorCount; i++)
         {
-            var path = ProceduralGenerationAlgorithms.RandomWalkCorridor(currentPosition, corridorLength);
+            var path = ProceduralGenerationAlgorithms.RandomWalkCorridor(currentPosition, corridorLength, corridorWidth);
             currentPosition = path[path.Count - 1];
             floorPositions.UnionWith(path);
             potentialRoomPositions.Add(currentPosition);
         }
         corridorPositions = new HashSet<Vector2Int>(floorPositions);
+    }
+
+    public override HashSet<Vector2Int> GenerateFloor()
+    {
+        throw new NotImplementedException();
     }
 }

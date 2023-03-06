@@ -38,6 +38,38 @@ public static class ProceduralGenerationAlgorithms
         }
         return corridor;
     }
+    public static List<Vector2Int> RandomWalkCorridor(Vector2Int startPosition, int corridorLength, int corridorWidth)
+    {
+        List<Vector2Int> corridor = new();
+
+        var direction = Direction2d.GetRandomCardinalDirection();
+        var currentPosition = startPosition;
+        corridor.Add(startPosition);
+
+        int width= corridorWidth-1;
+        int splitWidth = width / 2;
+        List<Vector2Int> perpandicular = Direction2d.GetPerpandicular(direction);
+
+        //Go back one step for more rectangular corridors junctions
+        currentPosition += (direction * -1); 
+
+        for (int i = 0; i < corridorLength; i++)
+        {
+            for (int j = 0; j < splitWidth; j++)
+            {
+                Vector2Int extraWidth = currentPosition + perpandicular[0];
+                corridor.Add(extraWidth);
+            }
+            for (int j = 0; j < width-splitWidth; j++)
+            {
+                Vector2Int extraWidth = currentPosition + perpandicular[1];
+                corridor.Add(extraWidth);
+            }
+            currentPosition += direction;
+            corridor.Add(currentPosition);
+        }
+        return corridor;
+    }
     public static List<Vector2Int> RectangularRoomGeneration(Vector2Int startPosition, int sizeX, int sizeY)
     {
         List<Vector2Int> room = new();
@@ -156,12 +188,39 @@ public static class HelperAlgorithms{
         // No other item was selected, so return very last index.
         return index;
     }
+    public static int GetRandomWeightedIndex(List<int> weights)
+    {
+        // Get the total sum of all the weights.
+        int weightSum = 0;
+        for (int i = 0; i < weights.Count(); ++i)
+        {
+            weightSum += weights[i];
+        }
+
+        // Step through all the possibilities, one by one, checking to see if each one is selected.
+        int index = 0;
+        int lastIndex = weights.Count() - 1;
+        while (index < lastIndex)
+        {
+            // Do a probability check with a likelihood of weights[index] / weightSum.
+            if (Random.Range(0, weightSum) < weights[index])
+            {
+                return index;
+            }
+
+            // Remove the last item from the sum of total untested weights and try again.
+            weightSum -= weights[index++];
+        }
+
+        // No other item was selected, so return very last index.
+        return index;
+    }
 
 }
 
 public static class Direction2d
 {
-    public static List<Vector2Int> cardinalDirections = new()
+    public static List<Vector2Int> cardinalDirections = new List<Vector2Int>
     {
         new Vector2Int(0,1),  //Up
         new Vector2Int(1,0),  //Right
@@ -194,4 +253,31 @@ public static class Direction2d
     {
         return cardinalDirections[Random.Range(0, cardinalDirections.Count)];
     }
+    public static List<Vector2Int> GetPerpandicular(Vector2Int direction)
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        switch (direction)
+        {
+            case Vector2Int v when v == new Vector2Int(0,1):  //Up
+                result.Add(new Vector2Int(1, 0));
+                result.Add(new Vector2Int(-1, 0));
+                break;
+            case Vector2Int v when v == new Vector2Int(1, 0):  //Right
+                result.Add(new Vector2Int(0, 1));
+                result.Add(new Vector2Int(0, -1));
+                break;
+            case Vector2Int v when v == new Vector2Int(0, -1):  //Down
+                result.Add(new Vector2Int(1, 0));
+                result.Add(new Vector2Int(-1, 0));
+                break;
+            case Vector2Int v when v == new Vector2Int(-1, 0):  //Left
+                result.Add(new Vector2Int(0, 1));
+                result.Add(new Vector2Int(0, -1));
+                break;
+        }
+
+        return result;
+    }
+
 }

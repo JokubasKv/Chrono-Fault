@@ -10,6 +10,10 @@ public class SimpleRandomWalkMapGenerator : AbstractMapGenerator
 {
     [SerializeField] protected SimpleRandomWalkData randomWalkData;
 
+    public override HashSet<Vector2Int> GenerateFloor()
+    {
+        return RunRandomWalk(startPosition, randomWalkData);
+    }
 
     protected override void RunProceduralGeneration()
     {

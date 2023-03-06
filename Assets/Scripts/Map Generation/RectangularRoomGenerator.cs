@@ -7,6 +7,10 @@ public class RectangularRoomGenerator : AbstractMapGenerator
 {
     [SerializeField] protected RectangularRoomData roomData;
 
+    public override HashSet<Vector2Int> GenerateFloor()
+    {
+        return RunRoomGeneration(startPosition, roomData);
+    }
 
     protected override void RunProceduralGeneration()
     {
@@ -19,6 +23,8 @@ public class RectangularRoomGenerator : AbstractMapGenerator
         }
         WalllGenerator.CreateWalls(floorPositions, tilemapVisualizer);
     }
+
+
 
     protected HashSet<Vector2Int> RunRoomGeneration(Vector2Int position, RectangularRoomData parameters)
     {
