@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -61,7 +62,10 @@ public class RoomFirstMapGenerator : SimpleRandomWalkMapGenerator
             BoundsInt roomBounds = roomList[i];
             Vector2Int roomCenter = new Vector2Int(Mathf.RoundToInt(roomBounds.center.x), Mathf.RoundToInt(roomBounds.center.y));
 
-            var roomFloor = RunRandomWalk(roomCenter, randomWalkData);
+
+            int[] weightsArray = randomWalkData.Select(x => x.weight).ToArray();
+            int index = HelperAlgorithms.GetRandomWeightedIndex(weightsArray);
+            var roomFloor = RunRandomWalk(roomCenter, randomWalkData[index].data);
             foreach (var position in roomFloor)
             {
                 if    (position.x >= (roomBounds.xMin + offset) && position.x <= (roomBounds.xMax - offset) 
