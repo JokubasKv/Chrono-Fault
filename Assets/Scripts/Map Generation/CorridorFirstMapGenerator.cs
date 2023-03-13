@@ -17,7 +17,8 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
 
     [SerializeReference] public AbstractMapGenerator roomGenerator;
 
-    private Dictionary<Vector2Int, HashSet<Vector2Int>> roomsDictionary = new();
+    [SerializeField] private MapData mapData;
+
     private HashSet<Vector2Int> floorPositions;
     private HashSet<Vector2Int> corridorPositions;
 
@@ -43,6 +44,8 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
 
         tilemapVisualizer.PaintFloorTiles(floorPositions);
         WalllGenerator.CreateWalls(floorPositions, tilemapVisualizer);
+
+        OnFinishedRoomGeneration.Invoke();
     }
 
     private void CreateRoomsAtDeadEnd(List<Vector2Int> deadEnds, HashSet<Vector2Int> roomFloors)
@@ -53,6 +56,8 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
             {
                 roomGenerator.startPosition = position;
                 var room = roomGenerator.GenerateFloor();
+
+                SaveRoomData(position, room);
                 roomFloors.UnionWith(room);
             }
         }
@@ -85,7 +90,7 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         var roomsToCreateCount = Mathf.RoundToInt(potentialRoomPositions.Count * roomPercent);
 
         List<Vector2Int> roomsToCreate = potentialRoomPositions.OrderBy(x => Random.Range(0,6)).Take(roomsToCreateCount).ToList();
-        ClearRoomData();
+
         foreach (var roomPosition in roomsToCreate)
         {
             roomGenerator.startPosition = roomPosition;
@@ -99,12 +104,12 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
 
     private void ClearRoomData()
     {
-        roomsDictionary.Clear();
+        throw new NotImplementedException();
     }
 
     private void SaveRoomData(Vector2Int roomPosition, HashSet<Vector2Int> roomFloor)
     {
-        roomsDictionary[roomPosition] = roomFloor;
+        mapData.Rooms.Add(new Room(roomPosition, roomFloor));
     }
 
     private void CreateCorridors(HashSet<Vector2Int> floorPositions, HashSet<Vector2Int> potentialRoomPositions)
