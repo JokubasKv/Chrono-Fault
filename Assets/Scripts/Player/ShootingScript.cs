@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class ShootingScript : MonoBehaviour
 {
@@ -47,5 +48,6 @@ public class ShootingScript : MonoBehaviour
         Vector2 direction = shootPoint.position - rotationPoint.position;
 
         rbG.AddForce(direction * shootPower + (inheritMovement ? Vector2.zero : Vector2.zero), ForceMode2D.Impulse);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().CallItemOnCreate(gameObject.transform);
     }
 }

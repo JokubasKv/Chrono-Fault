@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -13,6 +12,7 @@ public class PlayerController : MonoBehaviour
     Vector2 input_Movement;
     Vector2 input_Mouse;
     Rigidbody2D rb;
+    [HideInInspector] public Health health;
 
     [Header("Essential Parameters")]
     [SerializeField] Camera cam;
@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
     //[SerializeField] private float slideSpeed = 5.0f;
 
     [Header("Stats")]
-    [SerializeField] public int maxHealth = 10;
-    [SerializeField] public int currentHealth = 5;
 
     [Header("Items")]
     public List<ItemList> items = new();
@@ -43,6 +41,8 @@ public class PlayerController : MonoBehaviour
     {
         inputActions = new PlayerInput();
         rb = GetComponent<Rigidbody2D>();
+        health = GetComponent<Health>();
+        health.InitializeHealth(100);
         currentSetSpeed = walkSpeed;
     }
 
@@ -78,30 +78,13 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
-        CallItemUpdate();
+        StartCoroutine(CallItemUpdate());
     }
 
     #region - Update/FixedUpdate -
     private void Update()
     {
 
-    }
-
-    IEnumerator CallItemUpdate()
-    {
-        foreach (var item in items)
-        {
-            item.item.Update(this, item.stacks);
-        }
-        yield return new WaitForSeconds(1);
-        StartCoroutine(CallItemUpdate());
-    }
-    public void CallItemOnHit()
-    {
-        foreach (var item in items)
-        {
-            item.item.OnHit(this,new Enemy(), item.stacks);
-        }
     }
 
 
@@ -152,6 +135,32 @@ public class PlayerController : MonoBehaviour
         else if (input_Mouse.x > transform.position.x && !FacingRight)
         {
             Flip();
+        }
+    }
+    #endregion
+
+    #region - Items -
+    IEnumerator CallItemUpdate()
+    {
+        foreach (var item in items)
+        {
+            item.item.OnUpdate(this, item.stacks);
+        }
+        yield return new WaitForSeconds(1);
+        StartCoroutine(CallItemUpdate());
+    }
+    public void CallItemOnHit(Enemy enemy)
+    {
+        foreach (var item in items)
+        {
+            item.item.OnHit(this, enemy, item.stacks);
+        }
+    }
+    public void CallItemOnCreate(Transform target)
+    {
+        foreach (var item in items)
+        {
+            item.item.OnCreate(this, target);
         }
     }
     #endregion
