@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df267347e4d709c4c86855597c9ec276, type: 3}
-  m_Name: SimpleRandomWalkParameters_SmallRoom
+  m_Script: {fileID: 11500000, guid: c4ceb015950caaa46afd7d83d9cb8c04, type: 3}
+  m_Name: RectangularRoomParameters_MediumRoom
   m_EditorClassIdentifier: 
-  iterations: 10
-  walklength: 10
-  startRandomEachIteraion: 0
+  minX: 10
+  maxX: 15
+  minY: 10
+  maxY: 15

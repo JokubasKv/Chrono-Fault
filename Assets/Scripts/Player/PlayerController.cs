@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class scr_CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 
     PlayerInput inputActions;
@@ -23,6 +23,13 @@ public class scr_CharacterController : MonoBehaviour
     [SerializeField] private float walkSpeed = 3.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
     //[SerializeField] private float slideSpeed = 5.0f;
+
+    [Header("Stats")]
+    [SerializeField] public int maxHealth = 10;
+    [SerializeField] public int currentHealth = 5;
+
+    [Header("Items")]
+    public List<ItemList> items = new();
 
     private float currentSetSpeed;
     private bool FacingRight = true;
@@ -71,14 +78,33 @@ public class scr_CharacterController : MonoBehaviour
     
     private void Start()
     {
-
+        CallItemUpdate();
     }
 
     #region - Update/FixedUpdate -
     private void Update()
     {
-        
+
     }
+
+    IEnumerator CallItemUpdate()
+    {
+        foreach (var item in items)
+        {
+            item.item.Update(this, item.stacks);
+        }
+        yield return new WaitForSeconds(1);
+        StartCoroutine(CallItemUpdate());
+    }
+    public void CallItemOnHit()
+    {
+        foreach (var item in items)
+        {
+            item.item.OnHit(this,new Enemy(), item.stacks);
+        }
+    }
+
+
     private void FixedUpdate()
     {
         HandleMovement();

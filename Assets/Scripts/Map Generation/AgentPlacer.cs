@@ -17,14 +17,14 @@ public class AgentPlacer : MonoBehaviour
     [SerializeField]
     private List<int> roomEnemiesCount;
 
-    MapData dungeonData;
+    [SerializeField] MapData dungeonData;
 
     [SerializeField]
     private bool showGizmo = false;
 
     private void Awake()
     {
-        dungeonData = FindObjectOfType<MapData>();
+        //dungeonData = FindObjectOfType<MapData>();
     }
 
     public void PlaceAgents()
@@ -42,7 +42,7 @@ public class AgentPlacer : MonoBehaviour
             //Find the Path inside this specific room
             HashSet<Vector2Int> roomFloor = new HashSet<Vector2Int>(room.FloorTiles);
             //Find the tiles belonging to both the path and the room
-            roomFloor.IntersectWith(dungeonData.Path);
+            roomFloor.IntersectWith(dungeonData.Paths.SelectMany(floors => floors.FloorTiles).ToHashSet());
 
             //Run the BFS to find all the tiles in the room accessible from the path
             Dictionary<Vector2Int, Vector2Int> roomMap = roomGraph.RunBFS(roomFloor.First(), room.PropPositions);

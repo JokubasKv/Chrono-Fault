@@ -25,7 +25,7 @@ public class ShootingScript : MonoBehaviour
         rb = rotationPoint.GetComponent<Rigidbody2D>();
         inputActions.Enable();
     }
-
+    #endregion
     private void FixedUpdate()
     {
         HandleTurning();
@@ -35,7 +35,7 @@ public class ShootingScript : MonoBehaviour
     {
         Vector2 input_Mouse = cam.ScreenToWorldPoint(inputActions.Gameplay.MousePosition.ReadValue<Vector2>());
         Vector2 facingDirection = input_Mouse - rb.position;
-        float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg -90;
+        float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg - 90;
 
         rb.MoveRotation(angle);
     }
@@ -48,5 +48,4 @@ public class ShootingScript : MonoBehaviour
 
         rbG.AddForce(direction * shootPower + (inheritMovement ? Vector2.zero : Vector2.zero), ForceMode2D.Impulse);
     }
-    #endregion
 }

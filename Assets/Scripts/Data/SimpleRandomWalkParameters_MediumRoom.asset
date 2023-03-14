@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df267347e4d709c4c86855597c9ec276, type: 3}
-  m_Name: SimpleRandomWalkParameters_SmallRoom
+  m_Name: SimpleRandomWalkParameters_MediumRoom
   m_EditorClassIdentifier: 
-  iterations: 10
-  walklength: 10
-  startRandomEachIteraion: 0
+  iterations: 50
+  walklength: 15
+  startRandomEachIteraion: 1

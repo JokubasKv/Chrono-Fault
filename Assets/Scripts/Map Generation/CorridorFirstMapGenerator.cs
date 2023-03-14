@@ -102,14 +102,18 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         return roomPositions;
     }
 
-    private void ClearRoomData()
+    public void ClearRoomData()
     {
-        throw new NotImplementedException();
+        mapData.Reset();
     }
 
     private void SaveRoomData(Vector2Int roomPosition, HashSet<Vector2Int> roomFloor)
     {
         mapData.Rooms.Add(new Room(roomPosition, roomFloor));
+    }
+    private void SavePathData(Vector2Int startPosition, Vector2Int endPosition, Vector2Int direction, HashSet<Vector2Int> roomFloor)
+    {
+        mapData.Paths.Add(new Path(roomFloor, startPosition, endPosition, direction));
     }
 
     private void CreateCorridors(HashSet<Vector2Int> floorPositions, HashSet<Vector2Int> potentialRoomPositions)
@@ -118,7 +122,9 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         potentialRoomPositions.Add(currentPosition);
         for (int i = 0; i < corridorCount; i++)
         {
-            var path = ProceduralGenerationAlgorithms.RandomWalkCorridor(currentPosition, corridorLength, corridorWidth);
+            Vector2Int direction;
+            var path = ProceduralGenerationAlgorithms.RandomWalkCorridor(currentPosition, corridorLength, corridorWidth, out direction);
+            SavePathData(currentPosition, path[path.Count - 1], direction, new HashSet<Vector2Int>(path));
             currentPosition = path[path.Count - 1];
             floorPositions.UnionWith(path);
             potentialRoomPositions.Add(currentPosition);
@@ -129,5 +135,11 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
     public override HashSet<Vector2Int> GenerateFloor()
     {
         throw new NotImplementedException();
+    }
+
+    public override void Clear()
+    {
+        tilemapVisualizer.Clear();
+        ClearRoomData();
     }
 }

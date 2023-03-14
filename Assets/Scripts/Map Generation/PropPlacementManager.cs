@@ -33,7 +33,6 @@ public class PropPlacementManager : MonoBehaviour
             return;
         foreach (Room room in dungeonData.Rooms)
         {
-            Debug.Log(room);
             //Place props place props in the corners
             List<PropData> cornerProps = propsToPlace.Where(x => x.Corner).ToList();
             PlaceCornerProps(room, cornerProps);
@@ -103,11 +102,13 @@ public class PropPlacementManager : MonoBehaviour
     private void PlaceProps(
         Room room, List<PropData> wallProps, HashSet<Vector2Int> availableTiles, PlacementOriginCorner placement)
     {
-        Debug.Log(availableTiles.Count);
+
         //Remove path positions from the initial nearWallTiles to ensure the clear path to traverse dungeon
         HashSet<Vector2Int> tempPositons = new HashSet<Vector2Int>(availableTiles);
-        tempPositons.ExceptWith(dungeonData.Path);
-        Debug.Log(tempPositons.Count);
+        foreach (var path in dungeonData.Paths)
+        {
+            tempPositons.ExceptWith(path.FloorTiles);
+        }
 
         //We will try to place all the props
         foreach (PropData propToPlace in wallProps)
@@ -253,6 +254,8 @@ public class PropPlacementManager : MonoBehaviour
     /// <param name="cornerProps"></param>
     private void PlaceCornerProps(Room room, List<PropData> cornerProps)
     {
+        if (cornerProps.Count == 0)
+            return;
         float tempChance = cornerPropPlacementChance;
 
         foreach (Vector2Int cornerTile in room.CornerTiles)
@@ -300,7 +303,7 @@ public class PropPlacementManager : MonoBehaviour
             {
                 Vector2Int tempPos = groupOriginPosition + new Vector2Int(xOffset, yOffset);
                 if (room.FloorTiles.Contains(tempPos) &&
-                    !dungeonData.Path.Contains(tempPos) &&
+                    !dungeonData.Paths.All(floors => floors.FloorTiles.Contains(tempPos)) &&
                     !room.PropPositions.Contains(tempPos))
                 {
                     availableSpaces.Add(tempPos);
@@ -329,7 +332,6 @@ public class PropPlacementManager : MonoBehaviour
     /// <returns></returns>
     private GameObject PlacePropGameObjectAt(Room room, Vector2Int placementPostion, PropData propToPlace)
     {
-        Debug.Log(propToPlace.name);
         //Instantiat the PropData at this positon
         GameObject PropData = Instantiate(propPrefab);
         SpriteRenderer propSpriteRenderer = PropData.GetComponentInChildren<SpriteRenderer>();
@@ -359,16 +361,4 @@ public class PropPlacementManager : MonoBehaviour
         room.PropObjectReferences.Add(PropData);
         return PropData;
     }
-}
-
-/// <summary>
-/// Where to start placing the PropData ex. start at BottomLeft corner and search 
-/// if there are free space to the Right and Up in case of placing a biggex PropData
-/// </summary>
-public enum PlacementOriginCorner
-{
-    BottomLeft,
-    BottomRight,
-    TopLeft,
-    TopRight
 }

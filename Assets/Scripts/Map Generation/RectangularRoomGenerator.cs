@@ -1,20 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RectangularRoomGenerator : AbstractMapGenerator
 {
-    [SerializeField] protected RectangularRoomData roomData;
+    [SerializeField] protected List<RectangularRoomDataWeighted> roomData;
+
+    [Serializable]
+    public struct RectangularRoomDataWeighted
+    {
+        public RectangularRoomData data;
+        public int weight;
+    }
+
 
     public override HashSet<Vector2Int> GenerateFloor()
     {
-        return RunRoomGeneration(startPosition, roomData);
+        int index = HelperAlgorithms.GetRandomWeightedIndex(roomData.Select(x => x.weight).ToArray());
+        return RunRoomGeneration(startPosition, roomData[index].data);
     }
 
     protected override void RunProceduralGeneration()
     {
-        HashSet<Vector2Int> floorPositions = RunRoomGeneration(startPosition, roomData);
+        int index = HelperAlgorithms.GetRandomWeightedIndex(roomData.Select(x => x.weight).ToArray());
+        HashSet<Vector2Int> floorPositions = RunRoomGeneration(startPosition, roomData[index].data);
 
         if (clearPreviuosVisualization)
         {
@@ -38,5 +50,9 @@ public class RectangularRoomGenerator : AbstractMapGenerator
         floorPosition.UnionWith(path);
 
         return floorPosition;
+    }
+    public override void Clear()
+    {
+        tilemapVisualizer.Clear();
     }
 }

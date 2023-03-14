@@ -14,12 +14,14 @@ public abstract class AbstractMapGenerator : MonoBehaviour
 
     public void GenerateDungeon()
     {
-        if(clearPreviuosVisualization)
-            tilemapVisualizer.Clear();
+        if (clearPreviuosVisualization)
+            Clear();
         RunProceduralGeneration();
     }
 
     protected abstract void RunProceduralGeneration();
 
     public abstract HashSet<Vector2Int> GenerateFloor();
+
+    public abstract void Clear();
 }

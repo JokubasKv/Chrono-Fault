@@ -62,6 +62,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TimeTravel"",
+                    ""type"": ""Button"",
+                    ""id"": ""870423d3-f93e-4d4b-9d89-2516dd9b0f69"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +161,17 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""262c4079-1669-4d1c-9695-8ce3dfcd0784"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TimeTravel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +184,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_Gameplay_MouseLeftClick = m_Gameplay.FindAction("MouseLeftClick", throwIfNotFound: true);
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
+        m_Gameplay_TimeTravel = m_Gameplay.FindAction("TimeTravel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +248,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_MouseLeftClick;
     private readonly InputAction m_Gameplay_Movement;
     private readonly InputAction m_Gameplay_Sprint;
+    private readonly InputAction m_Gameplay_TimeTravel;
     public struct GameplayActions
     {
         private @PlayerInput m_Wrapper;
@@ -235,6 +257,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @MouseLeftClick => m_Wrapper.m_Gameplay_MouseLeftClick;
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
+        public InputAction @TimeTravel => m_Wrapper.m_Gameplay_TimeTravel;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +279,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
+                @TimeTravel.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
+                @TimeTravel.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
+                @TimeTravel.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -272,6 +298,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @TimeTravel.started += instance.OnTimeTravel;
+                @TimeTravel.performed += instance.OnTimeTravel;
+                @TimeTravel.canceled += instance.OnTimeTravel;
             }
         }
     }
@@ -282,5 +311,6 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnMouseLeftClick(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnTimeTravel(InputAction.CallbackContext context);
     }
 }

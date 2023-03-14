@@ -6,6 +6,11 @@ public class BulletScript : MonoBehaviour
 {
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Health health;
+        if(health = collision.gameObject.GetComponent<Health>())
+        {
+            health.GetHit(1, transform.gameObject);
+        }
         Destroy(gameObject);
     }
 }

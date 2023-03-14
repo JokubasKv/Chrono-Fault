@@ -20,8 +20,7 @@ public class SimpleRandomWalkMapGenerator : AbstractMapGenerator
 
     public override HashSet<Vector2Int> GenerateFloor()
     {
-        int[] weightsArray = randomWalkData.Select(x => x.weight).ToArray();
-        int index = HelperAlgorithms.GetRandomWeightedIndex(weightsArray);
+        int index = HelperAlgorithms.GetRandomWeightedIndex(randomWalkData.Select(x => x.weight).ToArray());
         return RunRandomWalk(startPosition, randomWalkData[index].data);
     }
 
@@ -51,5 +50,9 @@ public class SimpleRandomWalkMapGenerator : AbstractMapGenerator
             }
         }
         return floorPosition;
+    }
+    public override void Clear()
+    {
+        tilemapVisualizer.Clear();
     }
 }

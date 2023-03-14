@@ -8,7 +8,7 @@ public class DoubleMapGenerator : AbstractMapGenerator
     [SerializeField] private Vector2Int offSet = new Vector2Int(0,360);
 
     [SerializeReference] AbstractMapGenerator FutureMapGenerator;
-    [SerializeReference] AbstractMapGenerator PresentMapGenerator;
+    [SerializeReference] AbstractMapGenerator PastMapGenerator;
     [SerializeField] Seed seed;
 
     public override HashSet<Vector2Int> GenerateFloor()
@@ -24,11 +24,18 @@ public class DoubleMapGenerator : AbstractMapGenerator
     private void DoubleMapGeneration()
     {
         seed.SetSeed();
-        PresentMapGenerator.GenerateDungeon();
+        PastMapGenerator.GenerateDungeon();
 
         seed.SetSeed();
         FutureMapGenerator.startPosition += offSet;
         FutureMapGenerator.GenerateDungeon();
         FutureMapGenerator.startPosition -= offSet;
+    }
+
+    public override void Clear()
+    {
+        tilemapVisualizer.Clear();
+        PastMapGenerator.Clear();
+        FutureMapGenerator.Clear();
     }
 }

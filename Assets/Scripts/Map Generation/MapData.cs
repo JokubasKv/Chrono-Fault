@@ -10,7 +10,7 @@ using UnityEngine;
 public class MapData : MonoBehaviour
 {
     public List<Room> Rooms { get; set; } = new List<Room>();
-    public HashSet<Vector2Int> Path { get; set; } = new HashSet<Vector2Int>();
+    public List<Path> Paths { get; set; } = new List<Path>();
 
     public GameObject PlayerReference { get; set; }
     public void Reset()
@@ -19,16 +19,23 @@ public class MapData : MonoBehaviour
         {
             foreach (var item in room.PropObjectReferences)
             {
-                Destroy(item);
+                DestroyImmediate(item);
             }
             foreach (var item in room.EnemiesInTheRoom)
             {
-                Destroy(item);
+                DestroyImmediate(item);
+            }
+        }
+        foreach (Path path in Paths)
+        {
+            foreach (var item in path.BlockerObjectReferences)
+            {
+                DestroyImmediate(item);
             }
         }
         Rooms = new();
-        Path = new();
-        Destroy(PlayerReference);
+        Paths = new();
+        DestroyImmediate(PlayerReference);
     }
 
     public IEnumerator TutorialCoroutine(Action code)
@@ -66,5 +73,28 @@ public class Room
     {
         this.RoomCenterPos = roomCenterPos;
         this.FloorTiles = floorTiles;
+    }
+}
+
+/// <summary>
+/// Holds all the data about the connecting paths
+/// </summary>
+public class Path
+{
+    public HashSet<Vector2Int> FloorTiles { get; private set; } = new HashSet<Vector2Int>();
+
+    public Vector2Int StartPos { get; set; }
+    public Vector2Int EndPos { get; set; }
+    public Vector2Int Direction { get; set; }
+
+    public HashSet<Vector2Int> BlockerPositions { get; set; } = new HashSet<Vector2Int>();
+    public List<GameObject> BlockerObjectReferences { get; set; } = new List<GameObject>();
+
+    public Path(HashSet<Vector2Int> floorTiles, Vector2Int startPos, Vector2Int endPos, Vector2Int direction)
+    {
+        FloorTiles = floorTiles;
+        StartPos = startPos;
+        EndPos = endPos;
+        Direction = direction;
     }
 }
