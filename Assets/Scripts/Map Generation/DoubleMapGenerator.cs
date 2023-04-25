@@ -10,6 +10,7 @@ public class DoubleMapGenerator : AbstractMapGenerator
     [SerializeReference] AbstractMapGenerator FutureMapGenerator;
     [SerializeReference] AbstractMapGenerator PastMapGenerator;
     [SerializeField] Seed seed;
+    [SerializeField] bool createMapOnStart = false;
 
     public override HashSet<Vector2Int> GenerateFloor()
     {
@@ -37,5 +38,15 @@ public class DoubleMapGenerator : AbstractMapGenerator
         tilemapVisualizer.Clear();
         PastMapGenerator.Clear();
         FutureMapGenerator.Clear();
+    }
+
+    private void Start()
+    {
+        if (createMapOnStart)
+        {
+            seed.GenerateGameSeed();
+            Clear();
+            RunProceduralGeneration();
+        }
     }
 }

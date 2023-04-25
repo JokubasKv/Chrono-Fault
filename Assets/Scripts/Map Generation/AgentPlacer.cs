@@ -33,7 +33,7 @@ public class AgentPlacer : MonoBehaviour
             return;
 
         //Loop for each room
-        for (int i = 0; i < dungeonData.Rooms.Count; i++)
+        for (int i = 1; i < dungeonData.Rooms.Count; i++)
         {
             //TO place eneies we need to analyze the room tiles to find those accesible from the path
             Room room = dungeonData.Rooms[i];
@@ -115,6 +115,7 @@ public class RoomGraph
     };
 
     Dictionary<Vector2Int, List<Vector2Int>> graph = new Dictionary<Vector2Int, List<Vector2Int>>();
+    public Dictionary<Vector2Int, int> graphPositionWeight = new();
 
     public RoomGraph(HashSet<Vector2Int> roomFloor)
     {
@@ -152,11 +153,16 @@ public class RoomGraph
         Dictionary<Vector2Int, Vector2Int> map = new Dictionary<Vector2Int, Vector2Int>();
         map.Add(startPos, startPos);
 
+        int weight = 0;
+
+        graphPositionWeight.Add(startPos, weight);
+
         while (nodesToVisit.Count > 0)
         {
             //get the data about specific position
             Vector2Int node = nodesToVisit.Dequeue();
             List<Vector2Int> neighbours = graph[node];
+            weight++;
 
             //loop through each neighbour position
             foreach (Vector2Int neighbourPosition in neighbours)
@@ -168,6 +174,7 @@ public class RoomGraph
                     nodesToVisit.Enqueue(neighbourPosition);
                     visitedNodes.Add(neighbourPosition);
                     map[neighbourPosition] = node;
+                    graphPositionWeight[neighbourPosition] = weight;
                 }
             }
         }

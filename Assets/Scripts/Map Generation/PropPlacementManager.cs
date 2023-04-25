@@ -34,7 +34,9 @@ public class PropPlacementManager : MonoBehaviour
         foreach (Room room in dungeonData.Rooms)
         {
             //Place props place props in the corners
-            List<PropData> cornerProps = propsToPlace.Where(x => x.Corner).ToList();
+            List<PropData> cornerProps = propsToPlace
+                .Where(x => x.Corner)
+                .ToList();
             PlaceCornerProps(room, cornerProps);
 
             //Place props near LEFT wall
