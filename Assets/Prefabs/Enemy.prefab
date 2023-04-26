@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  chaseDistanceTreshold: 3.6
+  chaseDistanceTreshold: 7
   attackDistanceThreshold: 1
   attackDelay: 1
 --- !u!50 &2699117331136554483
@@ -121,6 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   maxHealth: 10
+  healhBar: {fileID: 0}
   OnHitWithReference:
     m_PersistentCalls:
       m_Calls: []

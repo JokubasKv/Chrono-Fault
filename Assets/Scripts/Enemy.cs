@@ -40,6 +40,7 @@ public class Enemy : MonoBehaviour
 
     public void PerformAttack()
     {
-        Instantiate(testObject);
+        
+        //Instantiate(testObject);
     }
 }
