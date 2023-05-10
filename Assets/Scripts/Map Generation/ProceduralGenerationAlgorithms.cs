@@ -217,6 +217,23 @@ public static class HelperAlgorithms{
         return index;
     }
 
+    public static int GetSizeY(HashSet<Vector2Int> tiles)
+    {
+        int minY = int.MaxValue;
+        int maxY = int.MinValue;
+
+        foreach (Vector2Int tile in tiles)
+        {
+            if (tile.y < minY)
+                minY = tile.y;
+
+            if (tile.y > maxY)
+                maxY = tile.y;
+        }
+
+        return maxY - minY + 1;
+    }
+
 }
 
 public static class Direction2d

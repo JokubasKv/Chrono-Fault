@@ -9,9 +9,9 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: TimeTravel_FullscreenBlit
   m_Shader: {fileID: -6465566751694194690, guid: 776e75f78243d8042b6dea2392411316, type: 3}
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,21 +46,21 @@ Material:
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 10
-    - _FullScreenIntensity: 0.433
+    - _FullScreenIntensity: 0.549
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5
     - _Surface: 1
-    - _VignetteIntensity: 0.671
-    - _VignetteRadiusPower: 3.21
-    - _VoronaiScale: 10.06
-    - _VoronaiSpeed: 1.36
-    - _VorronaiPower: 1.15
+    - _VignetteIntensity: 0.897
+    - _VignetteRadiusPower: -2.04
+    - _VoronaiScale: 8.31
+    - _VoronaiSpeed: 5.2
+    - _VorronaiPower: 1.2
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color: {r: 0.2230593, g: 0.56625754, b: 0.70579964, a: 1}
+    - _Color: {r: 0.22352941, g: 0.7058824, b: 0.6959238, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &4290691366206490596
 MonoBehaviour:

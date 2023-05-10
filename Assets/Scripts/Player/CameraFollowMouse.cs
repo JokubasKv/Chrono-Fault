@@ -23,6 +23,15 @@ public class CameraFollowMouse : MonoBehaviour
     #endregion
     private void Update()
     {
+        if(player == null)
+        {
+            GameObject goPlayer = GameObject.FindGameObjectWithTag("Player");
+            if(goPlayer == null)
+            {
+                return;
+            }
+            player = goPlayer.transform;
+        }
         Vector3 input_Mouse = cam.ScreenToWorldPoint(inputActions.Gameplay.MousePosition.ReadValue<Vector2>());
         Vector3 targetPos = (player.position + input_Mouse) / 2f;
 

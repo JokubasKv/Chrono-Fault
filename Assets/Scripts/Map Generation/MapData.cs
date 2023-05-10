@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -12,7 +13,21 @@ public class MapData : MonoBehaviour
     public List<Room> Rooms { get; set; } = new List<Room>();
     public List<Path> Paths { get; set; } = new List<Path>();
 
-    public GameObject PlayerReference { get; set; }
+    public HashSet<Vector2Int> AllFloorTiles { get; set; } = new HashSet<Vector2Int>();
+
+    public void CombineAllFloorTiles()
+    {
+        AllFloorTiles.Clear();
+        foreach (Room room in Rooms)
+        {
+            AllFloorTiles.UnionWith(room.FloorTiles);
+        }
+        foreach (Path path in Paths)
+        {
+            AllFloorTiles.UnionWith(path.FloorTiles);
+        }
+    }
+
     public void Reset()
     {
         foreach (Room room in Rooms)
@@ -35,13 +50,6 @@ public class MapData : MonoBehaviour
         }
         Rooms = new();
         Paths = new();
-        DestroyImmediate(PlayerReference);
-    }
-
-    public IEnumerator TutorialCoroutine(Action code)
-    {
-        yield return new WaitForSeconds(1);
-        code();
     }
 }
 
@@ -51,7 +59,8 @@ public class MapData : MonoBehaviour
 /// </summary>
 public class Room
 {
-    public Vector2 RoomCenterPos { get; set; }
+    public RoomTypes RoomType { get; set; } = RoomTypes.Normal;
+    public Vector2Int RoomCenterPos { get; set; }
     public HashSet<Vector2Int> FloorTiles { get; private set; } = new HashSet<Vector2Int>();
 
     public HashSet<Vector2Int> NearWallTilesUp { get; set; } = new HashSet<Vector2Int>();
@@ -69,7 +78,7 @@ public class Room
 
     public List<GameObject> EnemiesInTheRoom { get; set; } = new List<GameObject>();
 
-    public Room(Vector2 roomCenterPos, HashSet<Vector2Int> floorTiles)
+    public Room(Vector2Int roomCenterPos, HashSet<Vector2Int> floorTiles)
     {
         this.RoomCenterPos = roomCenterPos;
         this.FloorTiles = floorTiles;
@@ -97,4 +106,12 @@ public class Path
         EndPos = endPos;
         Direction = direction;
     }
+}
+
+public enum RoomTypes
+{
+    Starting,
+    Normal,
+    Item,
+    Boss
 }

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2695140686379597035}
   - component: {fileID: 2695140686379597034}
-  - component: {fileID: 2695140686379597033}
   - component: {fileID: 2695140686379597032}
   - component: {fileID: 2695140686379597031}
+  - component: {fileID: 7795938975475753127}
   m_Layer: 0
   m_Name: HealthItem
   m_TagString: Untagged
@@ -87,19 +87,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2695140686379597033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2695140686379597030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b24f7f01d76e584438cf615c1a82c5dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemDrop: 0
 --- !u!70 &2695140686379597032
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -137,3 +124,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &7795938975475753127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2695140686379597030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5b37279f9d1aa45a903367bda4fe9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 40d6b8b3784652841b85255896ffe1f5, type: 2}

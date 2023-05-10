@@ -9,18 +9,15 @@ using Random = UnityEngine.Random;
 public class CorridorFirstMapGenerator : AbstractMapGenerator
 {
 
-    [SerializeField] private int corridorLength = 14;
-    [SerializeField] private int corridorWidth = 3;
-    [SerializeField] private int corridorCount = 5;
+    [SerializeField] public int corridorLength = 14;
+    [SerializeField] public int corridorWidth = 2;
+    [SerializeField] public int corridorCount = 5;
 
     [SerializeField] [Range(0f,1f)] public float roomPercent = 0.6f;
 
     [SerializeReference] public AbstractMapGenerator roomGenerator;
 
     [SerializeField] private MapData mapData;
-
-    private HashSet<Vector2Int> floorPositions;
-    private HashSet<Vector2Int> corridorPositions;
 
     protected override void RunProceduralGeneration()
     {
@@ -89,7 +86,10 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
         HashSet<Vector2Int> roomPositions = new();
         var roomsToCreateCount = Mathf.RoundToInt(potentialRoomPositions.Count * roomPercent);
 
-        List<Vector2Int> roomsToCreate = potentialRoomPositions.OrderBy(x => Random.Range(0,6)).Take(roomsToCreateCount).ToList();
+        List<Vector2Int> roomsToCreate = potentialRoomPositions
+            .OrderBy(x => Random.Range(0,6))
+            .Take(roomsToCreateCount)
+            .ToList();
 
         foreach (var roomPosition in roomsToCreate)
         {
@@ -129,7 +129,6 @@ public class CorridorFirstMapGenerator : AbstractMapGenerator
             floorPositions.UnionWith(path);
             potentialRoomPositions.Add(currentPosition);
         }
-        corridorPositions = new HashSet<Vector2Int>(floorPositions);
     }
 
     public override HashSet<Vector2Int> GenerateFloor()

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class DoubleMapGenerator : AbstractMapGenerator
 {
-    [SerializeField] private Vector2Int offSet = new Vector2Int(0,360);
 
     [SerializeReference] AbstractMapGenerator FutureMapGenerator;
     [SerializeReference] AbstractMapGenerator PastMapGenerator;
     [SerializeField] Seed seed;
     [SerializeField] bool createMapOnStart = false;
+    [SerializeField] DualMapData dualMapData;
 
     public override HashSet<Vector2Int> GenerateFloor()
     {
@@ -24,13 +24,24 @@ public class DoubleMapGenerator : AbstractMapGenerator
 
     private void DoubleMapGeneration()
     {
-        seed.SetSeed();
-        PastMapGenerator.GenerateDungeon();
+        var levelsInstance = LevelsManager.Instance;
 
         seed.SetSeed();
-        FutureMapGenerator.startPosition += offSet;
-        FutureMapGenerator.GenerateDungeon();
-        FutureMapGenerator.startPosition -= offSet;
+        var codrridorFirstPast = PastMapGenerator as CorridorFirstMapGenerator;
+        codrridorFirstPast.corridorCount = levelsInstance.corridorCount;
+        codrridorFirstPast.corridorLength = levelsInstance.corridorLength;
+        codrridorFirstPast.GenerateDungeon();
+
+        dualMapData.offset = new Vector2Int(0, HelperAlgorithms.GetSizeY(dualMapData.PastMapData.AllFloorTiles) + 100);
+
+
+        seed.SetSeed();
+        var codrridorFirstFuture = FutureMapGenerator as CorridorFirstMapGenerator;
+        codrridorFirstFuture.corridorCount = levelsInstance.corridorCount;
+        codrridorFirstFuture.corridorLength = levelsInstance.corridorLength;
+        codrridorFirstFuture.startPosition += dualMapData.offset;
+        codrridorFirstFuture.GenerateDungeon();
+        codrridorFirstFuture.startPosition -= dualMapData.offset;
     }
 
     public override void Clear()

@@ -71,6 +71,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TurnTimeBack"",
+                    ""type"": ""Button"",
+                    ""id"": ""b02d4dca-2c32-40ed-b03a-8fe97b4f0030"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,45 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""action"": ""TimeTravel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2449009f-b704-4fb5-9b4c-ca0fb981573e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TurnTimeBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""fc8415af-e3cc-469a-8f4b-d62b5e553a19"",
+            ""actions"": [
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""46ec447b-14e7-49f3-965e-4df046144442"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ca6c7b56-a36c-40e6-b393-bada016f9b38"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +233,10 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_TimeTravel = m_Gameplay.FindAction("TimeTravel", throwIfNotFound: true);
+        m_Gameplay_TurnTimeBack = m_Gameplay.FindAction("TurnTimeBack", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_Escape = m_UI.FindAction("Escape", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,6 +301,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Movement;
     private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_TimeTravel;
+    private readonly InputAction m_Gameplay_TurnTimeBack;
     public struct GameplayActions
     {
         private @PlayerInput m_Wrapper;
@@ -258,6 +311,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @TimeTravel => m_Wrapper.m_Gameplay_TimeTravel;
+        public InputAction @TurnTimeBack => m_Wrapper.m_Gameplay_TurnTimeBack;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -282,6 +336,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @TimeTravel.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
                 @TimeTravel.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
                 @TimeTravel.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTimeTravel;
+                @TurnTimeBack.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnTimeBack;
+                @TurnTimeBack.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnTimeBack;
+                @TurnTimeBack.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnTimeBack;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -301,10 +358,46 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @TimeTravel.started += instance.OnTimeTravel;
                 @TimeTravel.performed += instance.OnTimeTravel;
                 @TimeTravel.canceled += instance.OnTimeTravel;
+                @TurnTimeBack.started += instance.OnTurnTimeBack;
+                @TurnTimeBack.performed += instance.OnTurnTimeBack;
+                @TurnTimeBack.canceled += instance.OnTurnTimeBack;
             }
         }
     }
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private IUIActions m_UIActionsCallbackInterface;
+    private readonly InputAction m_UI_Escape;
+    public struct UIActions
+    {
+        private @PlayerInput m_Wrapper;
+        public UIActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Escape => m_Wrapper.m_UI_Escape;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void SetCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterface != null)
+            {
+                @Escape.started -= m_Wrapper.m_UIActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnEscape;
+            }
+            m_Wrapper.m_UIActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
+            }
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     public interface IGameplayActions
     {
         void OnMousePosition(InputAction.CallbackContext context);
@@ -312,5 +405,10 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnTimeTravel(InputAction.CallbackContext context);
+        void OnTurnTimeBack(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnEscape(InputAction.CallbackContext context);
     }
 }

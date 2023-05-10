@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class PropPlacementManager : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class PropPlacementManager : MonoBehaviour
 
     [SerializeField]
     private List<PropData> propsToPlace;
+
+    [SerializeField]
+    private List<PropData> startingRoomPropsToPlace;
+
+    [SerializeField]
+    private List<GameObject> itemsToPlace;
 
     [SerializeField, Range(0, 1)]
     private float cornerPropPlacementChance = 0.7f;
@@ -33,75 +40,89 @@ public class PropPlacementManager : MonoBehaviour
             return;
         foreach (Room room in dungeonData.Rooms)
         {
-            //Place props place props in the corners
-            List<PropData> cornerProps = propsToPlace
-                .Where(x => x.Corner)
-                .ToList();
-            PlaceCornerProps(room, cornerProps);
+            switch (room.RoomType)
+            {
+                case RoomTypes.Normal:
 
-            //Place props near LEFT wall
-            List<PropData> leftWallProps = propsToPlace
-            .Where(x => x.NearWallLeft)
-            .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
-            .ToList();
-            PlaceProps(room, leftWallProps, room.NearWallTilesLeft, PlacementOriginCorner.BottomLeft);
+                    //Place props place props in the corners
+                    List<PropData> cornerProps = propsToPlace
+                        .Where(x => x.Corner)
+                        .ToList();
+                    PlaceCornerProps(room, cornerProps);
 
-            //Place props near RIGHT wall
-            List<PropData> rightWallProps = propsToPlace
-            .Where(x => x.NearWallRight)
-            .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
-            .ToList();
+                    //Place props near LEFT wall
+                    List<PropData> leftWallProps = propsToPlace
+                    .Where(x => x.NearWallLeft)
+                    .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                    .ToList();
+                    PlaceProps(room, leftWallProps, room.NearWallTilesLeft, PlacementOriginCorner.BottomLeft);
 
-            PlaceProps(room, rightWallProps, room.NearWallTilesRight, PlacementOriginCorner.TopRight);
+                    //Place props near RIGHT wall
+                    List<PropData> rightWallProps = propsToPlace
+                    .Where(x => x.NearWallRight)
+                    .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                    .ToList();
 
-            //Place props near UP wall
-            List<PropData> topWallProps = propsToPlace
-            .Where(x => x.NearWallUP)
-            .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
-            .ToList();
+                    PlaceProps(room, rightWallProps, room.NearWallTilesRight, PlacementOriginCorner.TopRight);
 
-            PlaceProps(room, topWallProps, room.NearWallTilesUp, PlacementOriginCorner.TopLeft);
+                    //Place props near UP wall
+                    List<PropData> topWallProps = propsToPlace
+                    .Where(x => x.NearWallUP)
+                    .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                    .ToList();
 
-            //Place props near DOWN wall
-            List<PropData> downWallProps = propsToPlace
-            .Where(x => x.NearWallDown)
-            .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
-            .ToList();
+                    PlaceProps(room, topWallProps, room.NearWallTilesUp, PlacementOriginCorner.TopLeft);
 
-            PlaceProps(room, downWallProps, room.NearWallTilesDown, PlacementOriginCorner.BottomLeft);
+                    //Place props near DOWN wall
+                    List<PropData> downWallProps = propsToPlace
+                    .Where(x => x.NearWallDown)
+                    .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                    .ToList();
 
-            //Place inner props
-            List<PropData> innerProps = propsToPlace
-                .Where(x => x.Inner)
-                .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
-                .ToList();
-            PlaceProps(room, innerProps, room.InnerTiles, PlacementOriginCorner.BottomLeft);
+                    PlaceProps(room, downWallProps, room.NearWallTilesDown, PlacementOriginCorner.BottomLeft);
+
+                    //Place inner props
+                    List<PropData> innerProps = propsToPlace
+                        .Where(x => x.Inner)
+                        .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                        .ToList();
+                    PlaceProps(room, innerProps, room.InnerTiles, PlacementOriginCorner.BottomLeft);
+                    break;
+
+                case RoomTypes.Starting:
+                    List<PropData> startingInnerProps = startingRoomPropsToPlace
+                        .Where(x => x.Inner)
+                        .OrderByDescending(x => x.PropSize.x * x.PropSize.y)
+                        .ToList();
+                    PlaceProps(room, startingInnerProps, room.InnerTiles, PlacementOriginCorner.BottomLeft);
+                    break;
+
+                case RoomTypes.Item:
+                    PlaceGameObject(room, itemsToPlace[Random.Range(0, itemsToPlace.Count())], room.InnerTiles, PlacementOriginCorner.BottomLeft);
+                    break;
+            }
         }
 
-        //OnFinished?.Invoke();
-        Invoke("RunEvent", 1);
-
-    }
-
-    public void RunEvent()
-    {
         OnFinished?.Invoke();
     }
 
-    private IEnumerator TutorialCoroutine(Action code)
+    private void PlaceGameObject(
+    Room room, GameObject gameObject, HashSet<Vector2Int> availableTiles, PlacementOriginCorner placement)
     {
-        yield return new WaitForSeconds(3);
-        code();
+        GameObject go = Instantiate(gameObject);
+        var availableTile = availableTiles.ElementAt(Random.Range(0, availableTiles.Count));
+        go.transform.localPosition = (Vector2)availableTile + Vector2.one * 0.5f;
+        room.PropPositions.Add(availableTile);
     }
 
-    /// <summary>
-    /// Places props near walls. We need to specify the props anw the placement start point
-    /// </summary>
-    /// <param name="room"></param>
-    /// <param name="wallProps">Props that we should try to place</param>
-    /// <param name="availableTiles">Tiles that are near the specific wall</param>
-    /// <param name="placement">How to place bigger props. Ex near top wall we want to start placemt from the Top corner and find if there are free spaces below</param>
-    private void PlaceProps(
+        /// <summary>
+        /// Places props near walls. We need to specify the props anw the placement start point
+        /// </summary>
+        /// <param name="room"></param>
+        /// <param name="wallProps">Props that we should try to place</param>
+        /// <param name="availableTiles">Tiles that are near the specific wall</param>
+        /// <param name="placement">How to place bigger props. Ex near top wall we want to start placemt from the Top corner and find if there are free spaces below</param>
+        private void PlaceProps(
         Room room, List<PropData> wallProps, HashSet<Vector2Int> availableTiles, PlacementOriginCorner placement)
     {
 

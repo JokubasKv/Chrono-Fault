@@ -1,45 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerController))]
 public class TimetravelController : MonoBehaviour
 {
-    [SerializeField] public Vector2Int offset;
+    Vector2Int offset;
+    MapData pastMap;
+    MapData futureMap;
 
-    [SerializeField] public MapData pastMap;
-    [SerializeField] public MapData futureMap;
 
-
-    private TimePhase currentTime;
+    private TimePhase currentTime =TimePhase.Past;
     PlayerInput inputActions;
     #region -Awake/OnEnable/OnDisable -
-    private void OnEnable()
+    private void Awake()
     {
         inputActions = new PlayerInput();
+    }
+    private void OnEnable()
+    {
+        
         inputActions.Gameplay.TimeTravel.performed += e => Timetravel();
 
         inputActions.Enable();
     }
     private void OnDisable()
     {
-        inputActions = new PlayerInput();
         inputActions.Gameplay.TimeTravel.performed -= e => Timetravel();
 
         inputActions.Disable();
     }
     #endregion
 
-
-    private void Start()
-    {
-        currentTime = TimePhase.Past;
-    }
-
     public void Timetravel()
     {
+        DualMapData dualMapData = FindObjectOfType<DualMapData>();
+        offset = dualMapData.offset;
+        pastMap = dualMapData.PastMapData;
+        futureMap = dualMapData.FutureMapData;
+
         Vector2Int newPosition = new Vector2Int();
         Vector2Int currentPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         switch (currentTime)
@@ -53,29 +55,26 @@ public class TimetravelController : MonoBehaviour
                 currentTime = TimePhase.Past;
                 break;
         }
-        transform.position = new Vector3(newPosition.x, newPosition.y) + new Vector3(0.5f,0.5f);
+        StartCoroutine(MovePlayer(newPosition, 0.5f));
+
+    }
+
+    IEnumerator MovePlayer(Vector2Int newPosition, float delayTime)
+    {
+        UIManagerSingleton.Instance.TimeTravelFlashOnce(delayTime * 2);
+        yield return new WaitForSeconds(delayTime);
+        transform.position = new Vector3(newPosition.x, newPosition.y) + new Vector3(0.5f, 0.5f);
+
     }
 
     public Vector2Int GetNearestCoordinates(MapData mapData, Vector2Int targetPoint)
     {
-        HashSet<Vector2Int> allFloorTiles = new HashSet<Vector2Int>();
-
-        // Add all the floor tiles from each room
-        foreach (Room room in mapData.Rooms)
-        {
-            allFloorTiles.UnionWith(room.FloorTiles);
-        }
-
-        // Add all the floor tiles from each path
-        foreach (Path path in mapData.Paths)
-        {
-            allFloorTiles.UnionWith(path.FloorTiles);
-        }
-        List<Vector2Int> coordinates = new List<Vector2Int>(allFloorTiles);
+        List<Vector2Int> coordinates = new List<Vector2Int>(mapData.AllFloorTiles);
+        //Debug.Log(string.Join(", ", coordinates.Select(v => v.ToString())));
 
         Dictionary<Vector2Int, float> distances = new Dictionary<Vector2Int, float>();
 
-        // Calculate distances between each coordinate and the target point
+
         foreach (Vector2Int coordinate in coordinates)
         {
             float distance = Vector2Int.Distance(coordinate, targetPoint);

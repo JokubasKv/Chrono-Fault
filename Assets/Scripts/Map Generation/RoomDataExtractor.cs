@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.EventSystems.EventTrigger;
+using Random = UnityEngine.Random;
 
 public class RoomDataExtractor : MonoBehaviour
 {
@@ -13,6 +16,7 @@ public class RoomDataExtractor : MonoBehaviour
 
     public UnityEvent OnFinishedRoomProcessing;
 
+    Dictionary<Vector2Int, int> weightedTiles = new Dictionary<Vector2Int, int>(); 
     private void Awake()
     {
 
@@ -64,20 +68,50 @@ public class RoomDataExtractor : MonoBehaviour
             room.NearWallTilesRight.ExceptWith(room.CornerTiles);
         }
 
-        //OnFinishedRoomProcessing?.Invoke();
-        Invoke("RunEvent", 1);
+        SetupRoomTypes();
+
+
+        OnFinishedRoomProcessing?.Invoke();
     }
 
-    public void RunEvent()
+    private void SetupRoomTypes()
     {
-        OnFinishedRoomProcessing?.Invoke();
+        
+
+        dungeonData.CombineAllFloorTiles();
+
+        TileGraph tileGraph = new TileGraph(dungeonData.AllFloorTiles);
+        weightedTiles = tileGraph.GetWeightedBFS(dungeonData.Rooms[0].RoomCenterPos, new HashSet<Vector2Int>());
+
+        KeyValuePair<Vector2Int, int> result = weightedTiles
+            .Where(entry => dungeonData.Rooms.Any(room => room.RoomCenterPos == entry.Key))
+            .OrderByDescending(entry => entry.Value)
+            .FirstOrDefault();
+        //Debug.Log(result.Value);
+
+        dungeonData.Rooms
+            .Where(room => room.RoomCenterPos == result.Key)
+            .FirstOrDefault()
+            .RoomType = RoomTypes.Boss;
+        dungeonData.Rooms[0].RoomType = RoomTypes.Starting;
+
+        bool unnasigned = true;
+        while (unnasigned)
+        {
+            int randomIndex = Random.Range(0, dungeonData.Rooms.Count);
+            if (dungeonData.Rooms[randomIndex].RoomType == RoomTypes.Normal)
+            {
+                dungeonData.Rooms[randomIndex].RoomType = RoomTypes.Item;
+                unnasigned = false;
+            }
+        }
     }
 
     private void OnDrawGizmosSelected()
     {
         if (dungeonData == null || showGizmo == false)
             return;
-        foreach (Room room in dungeonData.Rooms)
+        /*foreach (Room room in dungeonData.Rooms)
         {
             //Draw inner tiles
             Gizmos.color = Color.yellow;
@@ -138,7 +172,12 @@ public class RoomDataExtractor : MonoBehaviour
             {
                 Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
             }
+        }*/
+        foreach (var item in weightedTiles)
+        {
+            Handles.Label(new Vector3(item.Key.x, item.Key.y, 0), item.Value.ToString());
         }
+        
     }
 }
 

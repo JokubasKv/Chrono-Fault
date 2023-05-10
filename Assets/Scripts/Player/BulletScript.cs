@@ -6,15 +6,19 @@ public class BulletScript : MonoBehaviour
 {
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Enemy") {
-            Health health;
-            if (health = collision.gameObject.GetComponent<Health>())
+        if (!RewindManager.Instance.IsBeingRewinded)
+        {
+            if (collision.transform.tag == "Enemy")
             {
-                health.GetHit(1, transform.gameObject);
-                Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-                GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().CallItemOnHit(enemy);
+                EnemyHealth health;
+                if (health = collision.gameObject.GetComponent<EnemyHealth>())
+                {
+                    health.GetHit(1, transform.gameObject);
+                    Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+                    GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().CallItemOnHit(enemy);
+                }
             }
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 }

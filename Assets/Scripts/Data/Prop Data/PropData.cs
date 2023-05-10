@@ -7,9 +7,7 @@ public class PropData : ScriptableObject
 {
     [Header("Prop data:")]
     public Sprite PropSprite;
-    /// <summary>
-    /// Affects the collider size of the prop
-    /// </summary>
+    public GameObject PropPrefab;
     public Vector2Int PropSize = Vector2Int.one;
 
     [Space, Header("Placement type:")]

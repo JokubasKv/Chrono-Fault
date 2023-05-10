@@ -21,10 +21,21 @@ public class ShootingScript : MonoBehaviour
     private void Awake()
     {
         inputActions = new PlayerInput();
-        inputActions.Gameplay.MouseLeftClick.performed += e => Shoot();
+        
 
         rb = rotationPoint.GetComponent<Rigidbody2D>();
+        cam = FindObjectOfType<Camera>();
+        
+    }
+    private void OnEnable()
+    {
+        inputActions.Gameplay.MouseLeftClick.performed += e => Shoot();
         inputActions.Enable();
+    }
+    private void OnDisable()
+    {
+        inputActions.Gameplay.MouseLeftClick.performed -= e => Shoot();
+        inputActions.Disable();
     }
     #endregion
     private void FixedUpdate()
@@ -34,6 +45,10 @@ public class ShootingScript : MonoBehaviour
 
     private void HandleTurning()
     {
+        if (cam == null)
+        {
+            cam = Camera.main;
+        }
         Vector2 input_Mouse = cam.ScreenToWorldPoint(inputActions.Gameplay.MousePosition.ReadValue<Vector2>());
         Vector2 facingDirection = input_Mouse - rb.position;
         float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg - 90;
@@ -43,6 +58,10 @@ public class ShootingScript : MonoBehaviour
 
     private void Shoot()
     {
+        if (UIManagerSingleton.Instance.paused)
+        {
+            return;
+        }
         GameObject gameObject = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
         Rigidbody2D rbG = gameObject.GetComponent<Rigidbody2D>();
         Vector2 direction = shootPoint.position - rotationPoint.position;

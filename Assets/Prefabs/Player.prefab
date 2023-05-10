@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5693372907008712783}
   - component: {fileID: 5693372907008712781}
+  - component: {fileID: 1622473171534063093}
   - component: {fileID: 5693372907008712771}
   - component: {fileID: 5693372907008712780}
-  - component: {fileID: 5693372907008712769}
   - component: {fileID: 5693372907008712768}
   - component: {fileID: 5693372907008712770}
   m_Layer: 8
@@ -60,6 +60,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &1622473171534063093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5693372907008712779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57157d7520b23f4a883ebfcdde90ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5693372907008712771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +86,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 0
   maxHealth: 100
-  healhBar: {fileID: 0}
   OnHitWithReference:
     m_PersistentCalls:
       m_Calls: []
@@ -100,25 +111,17 @@ MonoBehaviour:
   animator: {fileID: 5693372907542011004}
   walkSpeed: 3
   sprintSpeed: 6
-  items: []
---- !u!114 &5693372907008712769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5693372907008712779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34c1bbea98b008540a82282057e84972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 0}
   rotationPoint: {fileID: 5693372908342126111}
   shootPoint: {fileID: 5693372908922598762}
   bullet: {fileID: 1664113992493400247, guid: 14bc564586e4c1c4fbde9454bd88623d, type: 3}
-  shootPower: 20
   inheritMovement: 0
+  rewindIntensity: 0.02
+  rewindSound: {fileID: 0}
+  attackSpeed: 0.5
+  extraMovement: 0
+  shootSpeed: 15
+  bulletCount: 1
+  items: []
 --- !u!61 &5693372907008712768
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -157,9 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1686f136f988b7f4d9d89d65100ba07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 100}
-  pastMap: {fileID: 0}
-  futureMap: {fileID: 0}
 --- !u!1 &5693372907200074161
 GameObject:
   m_ObjectHideFlags: 0
