@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2699117331136554483}
   - component: {fileID: 2699117331136554482}
   - component: {fileID: 6857450280832941821}
+  - component: {fileID: 7263334981833286124}
   m_Layer: 9
   m_Name: FutureEnemy
   m_TagString: Enemy
@@ -50,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abdf5a7b030c8c54c939d1141c76c22b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 2
+  maxSpeed: 4
   acceleration: 50
   deacceleration: 100
   currentSpeed: 0
@@ -68,10 +69,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   chaseDistanceTreshold: 7
-  attackDistanceThreshold: 1
+  attackDistanceThreshold: 2
   attackDelay: 1
-  shootingEnemy: 0
-  bullet: {fileID: 0}
+  shootingEnemy: 1
+  bullet: {fileID: 1664113992493400247, guid: 36bee895d0e5acc4f856a8982fd17b79, type: 3}
 --- !u!50 &2699117331136554483
 Rigidbody2D:
   serializedVersion: 4
@@ -121,6 +122,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57157d7520b23f4a883ebfcdde90ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7263334981833286124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2699117331136554488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e59ce90294aafb4a800747ac5ffcd43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 3
+  maxHealth: 3
+  isDead: 0
 --- !u!1 &2699117332076131527
 GameObject:
   m_ObjectHideFlags: 0

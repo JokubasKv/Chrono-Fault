@@ -44,11 +44,12 @@ public class PlayerController : MonoBehaviour
     float rewindValue = 0;
 
     [Header("Stats")]
-    [SerializeField] float attackSpeed = 1.0f;
-    [SerializeField] float extraMovement = 0.0f;
-    [SerializeField] float shootSpeed = 10.0f;
-    [SerializeField] float bulletCount = 1.0f;
+    [SerializeField] public float attackSpeed = 1.0f;
+    [SerializeField] public float extraMovement = 0.0f;
+    [SerializeField] public float shootSpeed = 10.0f;
+    [SerializeField] public float bulletCount = 1.0f;
     private float shootTimer = 0f;
+    private float standStillTimer = 0f;
 
 
     [Header("Items")]
@@ -115,7 +116,8 @@ public class PlayerController : MonoBehaviour
     }
     void OnLevelWasLoaded()
     {
-        UIManagerSingleton.Instance.UpdateItemSlotsUi(items);
+        if(items.Count != 0)
+            UIManagerSingleton.Instance.UpdateItemSlotsUi(items);
     }
 
     #region - Update/FixedUpdate -
@@ -138,6 +140,18 @@ public class PlayerController : MonoBehaviour
     private void HandleTimer()
     {
         shootTimer += Time.fixedDeltaTime;
+        if (input_Movement == Vector2.zero)
+        {
+            standStillTimer += Time.fixedDeltaTime;
+            if(standStillTimer >= 2f)
+            {
+
+            }
+        }
+        else
+        {
+            standStillTimer = 0f;
+        }
     }
 
 
@@ -212,6 +226,14 @@ public class PlayerController : MonoBehaviour
         foreach (var item in items)
         {
             item.item.OnCreate(this, target);
+        }
+    }
+
+    public void CallItemOnStandStill()
+    {
+        foreach (var item in items)
+        {
+            item.item.OnStandStill(this, item.stacks);
         }
     }
     #endregion

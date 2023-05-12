@@ -20,6 +20,9 @@ public class PropPlacementManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> itemsToPlace;
 
+    [SerializeField]
+    private GameObject LeavePrefab;
+
     [SerializeField, Range(0, 1)]
     private float cornerPropPlacementChance = 0.7f;
 
@@ -99,6 +102,10 @@ public class PropPlacementManager : MonoBehaviour
 
                 case RoomTypes.Item:
                     PlaceGameObject(room, itemsToPlace[Random.Range(0, itemsToPlace.Count())], room.InnerTiles, PlacementOriginCorner.BottomLeft);
+                    break;
+
+                case RoomTypes.Boss:
+                    PlaceGameObject(room, LeavePrefab, room.InnerTiles, PlacementOriginCorner.BottomLeft);
                     break;
             }
         }

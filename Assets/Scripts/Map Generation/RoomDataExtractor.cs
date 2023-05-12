@@ -173,10 +173,10 @@ public class RoomDataExtractor : MonoBehaviour
                 Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
             }
         }*/
-        foreach (var item in weightedTiles)
+        /*foreach (var item in weightedTiles)
         {
             Handles.Label(new Vector3(item.Key.x, item.Key.y, 0), item.Value.ToString());
-        }
+        }*/
         
     }
 }

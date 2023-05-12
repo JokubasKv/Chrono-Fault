@@ -855,10 +855,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dungeonData: {fileID: 183502716}
   propsToPlace:
+  - {fileID: 11400000, guid: 4260d6493ff9e6d479c0688695d4ae6e, type: 2}
   - {fileID: 11400000, guid: 6d9dcaeda5c134a429befacfa0a07294, type: 2}
-  startingRoomPropsToPlace: []
+  startingRoomPropsToPlace:
+  - {fileID: 11400000, guid: 6d9dcaeda5c134a429befacfa0a07294, type: 2}
   itemsToPlace:
   - {fileID: 7973523646216677313, guid: 048c6d934fb63e94c99ac2c976b45a12, type: 3}
+  - {fileID: 7973523646216677313, guid: 335d0329a7f9d8b448a90186e0286138, type: 3}
+  LeavePrefab: {fileID: 3602933282308770540, guid: 2b28e2840e1814447922dfa8ed23eb7d, type: 3}
   cornerPropPlacementChance: 0.7
   propPrefab: {fileID: 5745148120357833712, guid: 4f75a19946e3b5f40b1080917f80a916, type: 3}
   OnFinished:
@@ -929,12 +933,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a594b48d315d5b843ba14908bd1aa990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2699117331136554488, guid: 57f9d3adf3aeaa1438a0c8c4bdb70125, type: 3}
+  enemyPrefab: {fileID: 2699117331136554488, guid: c092e07d3a46cab45b4ee103d8f9127d, type: 3}
   playerPrefab: {fileID: 0}
   minRoomEnemyCount: 0
-  maxRoomEnemyCount: 0
+  maxRoomEnemyCount: 10
   dungeonData: {fileID: 183502716}
-  showGizmo: 1
+  showGizmo: 0
 --- !u!1 &187808119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1195,7 +1199,7 @@ RectTransform:
   - {fileID: 1364789711}
   - {fileID: 187808120}
   m_Father: {fileID: 511836247}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1367,7 +1371,7 @@ MonoBehaviour:
   roomPercent: 0.6
   EnemyHealth: 10
   MinEnemies: 0
-  MaxEnemies: 10
+  MaxEnemies: 3
 --- !u!4 &303078038
 Transform:
   m_ObjectHideFlags: 0
@@ -1863,8 +1867,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 337676899}
-  - {fileID: 290502545}
   - {fileID: 1974124345}
+  - {fileID: 290502545}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14945,7 +14949,7 @@ MonoBehaviour:
   futureMapData: {fileID: 183502716}
   blockerToPlace:
   - {fileID: 11400000, guid: 6d9dcaeda5c134a429befacfa0a07294, type: 2}
-  blockerPlacementChance: 1
+  blockerPlacementChance: 0.505
   propPrefab: {fileID: 5745148120357833712, guid: 4f75a19946e3b5f40b1080917f80a916, type: 3}
   OnFinished:
     m_PersistentCalls:
@@ -17363,6 +17367,8 @@ MonoBehaviour:
   itemsToPlace:
   - {fileID: 7973523646216677313, guid: 048c6d934fb63e94c99ac2c976b45a12, type: 3}
   - {fileID: 2695140686379597030, guid: eedc6de48f9721248aa6bd82d4a37459, type: 3}
+  - {fileID: 7973523646216677313, guid: 335d0329a7f9d8b448a90186e0286138, type: 3}
+  LeavePrefab: {fileID: 3602933282308770540, guid: 2b28e2840e1814447922dfa8ed23eb7d, type: 3}
   cornerPropPlacementChance: 0.7
   propPrefab: {fileID: 5745148120357833712, guid: 4f75a19946e3b5f40b1080917f80a916, type: 3}
   OnFinished:
@@ -41704,7 +41710,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 106.28003, y: 465.59}
+  m_AnchoredPosition: {x: 106.28003, y: 448}
   m_SizeDelta: {x: -792.85, y: -931.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1893438904
@@ -41969,7 +41975,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974124342}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41978,7 +41984,7 @@ RectTransform:
   - {fileID: 866105324}
   - {fileID: 1735965163}
   m_Father: {fileID: 511836247}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

@@ -17,4 +17,5 @@ public enum Items
 {
     FireFang,
     SleepingMushroom,
+    SoldierArm,
 }

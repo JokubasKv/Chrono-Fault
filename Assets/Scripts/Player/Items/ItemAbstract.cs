@@ -19,4 +19,8 @@ public abstract class ItemAbstract
     {
 
     }
+    public virtual void OnPickup(PlayerController player)
+    {
+
+    }
 }

@@ -21,6 +21,8 @@ public class ItemPickup : MonoBehaviour
                 return new FireDamageItem();
             case Items.SleepingMushroom:
                 return new HealingOnStandStilItem();
+            case Items.SoldierArm:
+                return new AttackSpeedIncrease();
             default :
                 return new FireDamageItem();
         }
@@ -37,6 +39,7 @@ public class ItemPickup : MonoBehaviour
 
     public virtual void AddItem(PlayerController player)
     {
+        item.OnPickup(player);
         foreach (ItemList i in player.items)
         {
             Debug.Log(i.item.GetType() + " " + item.GetType());

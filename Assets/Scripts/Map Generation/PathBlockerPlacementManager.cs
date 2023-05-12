@@ -31,6 +31,7 @@ public class PathBlockerPlacementManager : MonoBehaviour
             Debug.Log("Missing Map Data For Blockers Generation");
             return;
         }
+        Debug.Log("Doh");
         for (int i = 0; i < pastMapData.Paths.Count; i++)
         {
             if (UnityEngine.Random.value < blockerPlacementChance)
