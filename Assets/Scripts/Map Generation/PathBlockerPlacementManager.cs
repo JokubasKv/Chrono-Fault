@@ -22,8 +22,6 @@ public class PathBlockerPlacementManager : MonoBehaviour
 
     public UnityEvent OnFinished;
 
-
-
     public void ProccesBlockers()
     {
         if (pastMapData == null || futureMapData == null)
@@ -34,7 +32,7 @@ public class PathBlockerPlacementManager : MonoBehaviour
         Debug.Log("Doh");
         for (int i = 0; i < pastMapData.Paths.Count; i++)
         {
-            if (UnityEngine.Random.value < blockerPlacementChance)
+            if (Random.value < blockerPlacementChance)
             {
                 PropData blocker = blockerToPlace[Random.Range(0, blockerToPlace.Count)];
 
@@ -50,8 +48,7 @@ public class PathBlockerPlacementManager : MonoBehaviour
             }
         }
 
-        //OnFinished?.Invoke();
-        Invoke("RunEvent", 1);
+        OnFinished?.Invoke();
 
     }  
 
@@ -73,65 +70,24 @@ public class PathBlockerPlacementManager : MonoBehaviour
         }
     }
 
-    public void RunEvent()
-    {
-        OnFinished?.Invoke();
-    }
-
-    private IEnumerator TutorialCoroutine(Action code)
-    {
-        yield return new WaitForSeconds(3);
-        code();
-    }
-
-    /// <summary>
-    /// Place a PropData as a new GameObject at a specified position
-    /// </summary>
-    /// <param name="room"></param>
-    /// <param name="placementPostion"></param>
-    /// <param name="propToPlace"></param>
-    /// <returns></returns>
     private GameObject PlacePropGameObjectAt(Path path, Vector2Int placementPostion, PropData propToPlace)
     {
-        //Instantiat the PropData at this positon
-        GameObject PropData = Instantiate(propPrefab);
-        SpriteRenderer propSpriteRenderer = PropData.GetComponentInChildren<SpriteRenderer>();
-
-        //set the sprite
-        propSpriteRenderer.sprite = propToPlace.PropSprite;
-
-        //Add a collider
-        CapsuleCollider2D collider
-            = propSpriteRenderer.gameObject.AddComponent<CapsuleCollider2D>();
-        collider.offset = Vector2.zero;
-        if (propToPlace.PropSize.x > propToPlace.PropSize.y)
+        if (propToPlace.PropPrefab != null)
         {
-            collider.direction = CapsuleDirection2D.Horizontal;
+            GameObject gameObject = Instantiate(propToPlace.PropPrefab);
+
+            gameObject.transform.localPosition = (Vector2)placementPostion + Vector2.one * 0.5f;
+
+            path.BlockerPositions.Add(placementPostion);
+            path.BlockerObjectReferences.Add(gameObject);
+
+            return gameObject;
         }
-        Vector2 size
-            = new Vector2(propToPlace.PropSize.x * 0.8f, propToPlace.PropSize.y * 0.8f);
-        collider.size = size;
-
-        PropData.transform.localPosition = (Vector2)placementPostion;
-        //adjust the position to the sprite
-        propSpriteRenderer.transform.localPosition
-            = (Vector2)propToPlace.PropSize * 0.5f;
-
-        //Save the PropData in the room data (so in the dunbgeon data)
-        path.BlockerPositions.Add(placementPostion);
-        path.BlockerObjectReferences.Add(PropData);
-        return PropData;
+        else
+        {
+            Debug.Log("Missing Gameobject on " + propToPlace);
+            return null;
+        }
     }
 }
 
-/// <summary>
-/// Where to start placing the PropData ex. start at BottomLeft corner and search 
-/// if there are free space to the Right and Up in case of placing a biggex PropData
-/// </summary>
-public enum PlacementOriginCorner
-{
-    BottomLeft,
-    BottomRight,
-    TopLeft,
-    TopRight
-}

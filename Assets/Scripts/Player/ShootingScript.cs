@@ -58,7 +58,7 @@ public class ShootingScript : MonoBehaviour
 
     private void Shoot()
     {
-        if (UIManagerSingleton.Instance.paused)
+        if (UIManagerSingleton.instance.paused)
         {
             return;
         }

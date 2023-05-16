@@ -6,7 +6,7 @@ public class BulletScript : MonoBehaviour
 {
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!RewindManager.Instance.IsBeingRewinded)
+        if (!RewindManager.instance.IsBeingRewinded)
         {
             if (collision.transform.tag == "Enemy")
             {

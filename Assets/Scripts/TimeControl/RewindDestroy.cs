@@ -49,4 +49,12 @@ public class RewindDestroy : MonoSingleton<RewindDestroy>
             Instantiate(gameObject);
         }
     }
+
+    protected override void InternalInit()
+    {
+    }
+
+    protected override void InternalOnDestroy()
+    {
+    }
 }

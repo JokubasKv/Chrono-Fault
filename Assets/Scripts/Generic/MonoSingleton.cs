@@ -1,45 +1,142 @@
-using UnityEngine;
+#region Using
 
-//https://blackcatgames.medium.com/easy-singletons-in-unity-1f6905784d3f
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+#endregion
+
+
+//https://stackoverflow.com/questions/61260097/how-can-i-use-a-singleton-when-switching-loading-scenes
+/// <summary>
+///     Generic singleton Class. Extend this class to make singleton component.
+///     Example:
+///     <code>
+/// public class Foo : GenericSingleton<Foo>
+/// </code>
+///     . To get the instance of Foo class, use <code>Foo.instance</code>
+///     Override <code>Init()</code> method instead of using <code>Awake()</code>
+///     from this class.
+/// </summary>
 public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 {
     private static T _instance;
-    public static T Instance
+
+    [SerializeField, Tooltip("If set to true, the gameobject will deactive on Awake")] private bool _deactivateOnLoad;
+    [SerializeField, Tooltip("If set to true, the singleton will be marked as \"don't destroy on load\"")] private bool _dontDestroyOnLoad;
+
+    private bool _isInitialized;
+
+    public static T instance
     {
         get
         {
-            if (_instance == null)
+            // Instance required for the first time, we look for it
+            if (_instance != null)
             {
-                Debug.LogError(typeof(T).ToString() + " is missing.");
+                return _instance;
             }
 
+            var instances = Resources.FindObjectsOfTypeAll<T>();
+            if (instances == null || instances.Length == 0)
+            {
+                return null;
+            }
+
+            _instance = instances.FirstOrDefault(i => i.gameObject.scene.buildIndex != -1);
+            if (Application.isPlaying)
+            {
+                _instance?.Init();
+            }
             return _instance;
         }
     }
 
-
-
-    void Awake()
+    // If no other monobehaviour request the instance in an awake function
+    // executing before this one, no need to search the object.
+    protected virtual void Awake()
     {
-        if (_instance != null)
+        if (_instance == null || !_instance || !_instance.gameObject)
         {
-            Debug.LogWarning("Second instance of " + typeof(T) + " created. Automatic self-destruct triggered.");
-            Destroy(this.gameObject);
+            _instance = (T)this;
         }
-        _instance = this as T;
-
-        Init();
+        else if (_instance != this)
+        {
+            Debug.LogError($"Another instance of {GetType()} already exist! Destroying self...");
+            Destroy(this);
+            return;
+        }
+        _instance.Init();
     }
 
+    /// <summary>
+    ///     This function is called when the instance is used the first time
+    ///     Put all the initializations you need here, as you would do in Awake
+    /// </summary>
+    public void Init()
+    {
+        if (_isInitialized)
+        {
+            return;
+        }
+
+        if (_dontDestroyOnLoad)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
+        if (_deactivateOnLoad)
+        {
+            gameObject.SetActive(false);
+        }
+
+        SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
+
+        InternalInit();
+        _isInitialized = true;
+    }
+
+    private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
+    {
+        // Sanity
+        if (!instance || gameObject == null)
+        {
+            SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+            _instance = null;
+            return;
+        }
+
+        if (_dontDestroyOnLoad)
+        {
+            return;
+        }
+
+        SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+        _instance = null;
+    }
+
+    protected abstract void InternalInit();
+
+    /// Make sure the instance isn't referenced anymore when the user quit, just in case.
+    private void OnApplicationQuit()
+    {
+        _instance = null;
+    }
 
     void OnDestroy()
     {
-        if (_instance == this)
+        // Clear static listener OnDestroy
+        SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+
+        StopAllCoroutines();
+        InternalOnDestroy();
+        if (_instance != this)
         {
-            _instance = null;
+            return;
         }
+        _instance = null;
+        _isInitialized = false;
     }
 
-
-    public virtual void Init() { }
+    protected abstract void InternalOnDestroy();
 }

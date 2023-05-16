@@ -24,10 +24,6 @@ public class CircularArray<T>
         }
     }
 
-    /// <summary>
-    /// Write value to the last position of the buffer
-    /// </summary>
-    /// <param name="val"></param>
     public void WriteLastValue(T val)
     {
         bufferCurrentPosition++;
@@ -41,19 +37,12 @@ public class CircularArray<T>
             dataArray[bufferCurrentPosition] = val;
         }
     }
-    /// <summary>
-    /// Read last value that was written to buffer
-    /// </summary>
-    /// <returns></returns>
+
     public T ReadLastValue()
     {
         return dataArray[bufferCurrentPosition];
     }
-    /// <summary>
-    /// Read specified value from circular buffer
-    /// </summary>
-    /// <param name="seconds">Variable defining how many seconds into the past should be read (eg. seconds=5 then function will return the values that tracked object had exactly 5 seconds ago)</param>
-    /// <returns></returns>
+
     public T ReadFromBuffer(float seconds)
     {
         int howManyBeforeLast = (int)(howManyRecordsPerSecond * seconds);

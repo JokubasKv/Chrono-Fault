@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12484aa6e50042d4887b0cb33ba7b72e, type: 3}
   m_Name: Prop_Rock
   m_EditorClassIdentifier: 
-  PropSprite: {fileID: 21300000, guid: 15688e8466d71e04aba43db3a2b3bf6b, type: 3}
+  PropPrefab: {fileID: 7936485949451976647, guid: 8e543472d0d4b0047888793ca8cc98ac, type: 3}
   PropSize: {x: 1, y: 1}
   Corner: 0
   NearWallUP: 0

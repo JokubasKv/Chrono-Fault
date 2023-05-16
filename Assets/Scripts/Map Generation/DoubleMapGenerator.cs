@@ -24,7 +24,7 @@ public class DoubleMapGenerator : AbstractMapGenerator
 
     private void DoubleMapGeneration()
     {
-        var levelsInstance = LevelsManager.Instance;
+        var levelsInstance = LevelsManager.instance;
 
         seed.SetSeed();
         var codrridorFirstPast = PastMapGenerator as CorridorFirstMapGenerator;

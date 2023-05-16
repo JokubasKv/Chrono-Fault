@@ -46,9 +46,6 @@ public abstract class RewindAbstract : MonoBehaviour
         public Vector3 scale;
     }
 
-    /// <summary>
-    /// Call this method in Track() if you want to track object Position and Rotation
-    /// </summary>
     protected void TrackTransform()
     {
         TransformValues valuesToWrite;
@@ -57,9 +54,7 @@ public abstract class RewindAbstract : MonoBehaviour
         valuesToWrite.scale = transform.localScale;
         trackedTransformValues.WriteLastValue(valuesToWrite);
     }
-    /// <summary>
-    /// Call this method in GetSnapshotFromSavedValues() to restore Position and Rotation
-    /// </summary>
+
     protected void RestoreTransform(float seconds)
     {
         TransformValues valuesToRead = trackedTransformValues.ReadFromBuffer(seconds);
@@ -75,9 +70,7 @@ public abstract class RewindAbstract : MonoBehaviour
         public Vector3 angularVelocity;
     }
     CircularArray<VelocityValues> trackedVelocities;
-    /// <summary>
-    /// Call this method in Track() if you want to track velocity of Rigidbody
-    /// </summary>
+
     protected void TrackVelocity()
     {
         if (rb2d != null)
@@ -92,9 +85,6 @@ public abstract class RewindAbstract : MonoBehaviour
             Debug.LogError("Cannot find Rigidbody on the object, while TrackVelocity() is being called!!!");
         }
     }
-    /// <summary>
-    /// Call this method in GetSnapshotFromSavedValues() to velocity of Rigidbody
-    /// </summary>
     protected void RestoreVelocity(float seconds)
     {
         VelocityValues valuesToRead = trackedVelocities.ReadFromBuffer(seconds);
@@ -111,9 +101,6 @@ public abstract class RewindAbstract : MonoBehaviour
         public bool isPlaying;
         public bool isEnabled;
     }
-    /// <summary>
-    /// Call this method in Track() if you want to track Audio
-    /// </summary>
     protected void TrackAudio()
     {
         if (audioSource == null)
@@ -130,9 +117,6 @@ public abstract class RewindAbstract : MonoBehaviour
 
         trackedAudioTimes.WriteLastValue(dataToWrite);
     }
-    /// <summary>
-    /// Call this method in GetSnapshotFromSavedValues() to restore Audio
-    /// </summary>
     protected void RestoreAudio(float seconds)
     {
         AudioTrackedData readValues = trackedAudioTimes.ReadFromBuffer(seconds);
@@ -154,8 +138,6 @@ public abstract class RewindAbstract : MonoBehaviour
     }
     #endregion
 
-
-
     private void OnTrackingChange(bool val)
     {
         IsTracking = val;
@@ -171,16 +153,8 @@ public abstract class RewindAbstract : MonoBehaviour
         RewindManager.TrackingStateCall -= OnTrackingChange;
     }
 
-    /// <summary>
-    /// Main method where all tracking is filled, lets choose here what will be tracked for specific object
-    /// </summary>
+
     protected abstract void Track();
-
-
-    /// <summary>
-    /// Main method where all rewinding is filled, lets choose here what will be rewinded for specific object
-    /// </summary>
-    /// <param name="seconds">Parameter defining how many seconds we want to rewind back</param>
     protected abstract void Rewind(float seconds);
 
 }

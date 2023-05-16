@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,19 +10,18 @@ public class UIManagerSingleton : MonoSingleton<UIManagerSingleton>
     [SerializeField] private GameObject gamePanel;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject itemPanel;
+    [SerializeField] private TextMeshProUGUI itemPanelText;
+    [SerializeField] private TextMeshProUGUI itemPanelDescriptionText;
     [SerializeField] private Image timeTravelImage;
     [SerializeField] private Image healthbarImage;
+    [SerializeField] private Image timeBarImage;
     [SerializeField] private List<UIInventorySlot> uIInventorySlots;
 
 
     [SerializeField] public bool paused = false;
      
     Coroutine _flashRoutine = null;
-
-    public override void Init()
-    {
-        base.Init();
-    }
 
     public void PauseGame()
     {
@@ -45,7 +45,7 @@ public class UIManagerSingleton : MonoSingleton<UIManagerSingleton>
     public void RetryGame()
     {
         UnpauseGame();
-        LevelsManager.Instance.ResetGame();
+        LevelsManager.instance.ResetGame();
     }
 
     public void ExitGame()
@@ -58,6 +58,10 @@ public class UIManagerSingleton : MonoSingleton<UIManagerSingleton>
     {
         healthbarImage.fillAmount = fillAmount;
     }
+    public void SetTimeBar(float fillAmount)
+    {
+        timeBarImage.fillAmount = fillAmount;
+    }
 
     public void UpdateItemSlotsUi(List<ItemList> itemLists)
     {
@@ -66,8 +70,23 @@ public class UIManagerSingleton : MonoSingleton<UIManagerSingleton>
             uIInventorySlots[i].SetUILayout(itemLists[i]);
         }
     }
+    public void DisplayItem(ItemList item)
+    {
+        StartCoroutine(DisplayItemTimed(item, 3f));
+    }
+    IEnumerator DisplayItemTimed(ItemList item, float seconds)
+    {
+        itemPanelText.text = "You Picked Up " + item.data.itemName;
+        itemPanelDescriptionText.text = item.data.description;
+        itemPanel.SetActive(true);
+        for (float t = 0f; t <= seconds; t += Time.deltaTime)
+        {
+            yield return null;
+        }
+        itemPanel.SetActive(false);
+    }
 
-    public void TimeTravelFlashOnce(float secondForOneFlash)
+        public void TimeTravelFlashOnce(float secondForOneFlash)
     {
         if (_flashRoutine != null)
         {
@@ -150,5 +169,14 @@ public class UIManagerSingleton : MonoSingleton<UIManagerSingleton>
             timeTravelImage.color = newColor;
             yield return null;
         }
+    }
+
+    protected override void InternalInit()
+    {
+    }
+
+    protected override void InternalOnDestroy()
+    {
+
     }
 }

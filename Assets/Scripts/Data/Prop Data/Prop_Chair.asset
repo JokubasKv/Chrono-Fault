@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12484aa6e50042d4887b0cb33ba7b72e, type: 3}
   m_Name: Prop_Chair
   m_EditorClassIdentifier: 
-  PropSprite: {fileID: -1109065097, guid: 9ac4743dbff6dbc46bd50c3a66b33d8c, type: 3}
+  PropPrefab: {fileID: 5194547139755901414, guid: e42cd0f73dc6a8348b8f2f5cfeafffe0, type: 3}
   PropSize: {x: 1, y: 1}
   Corner: 1
   NearWallUP: 1

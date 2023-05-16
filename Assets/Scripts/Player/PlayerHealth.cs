@@ -14,13 +14,12 @@ public class PlayerHealth : MonoBehaviour
     private bool isDead = false;
     public void UpdateBar()
     {
-        UIManagerSingleton.Instance.SetHealthBar(currentHealth / (float)maxHealth);
+        UIManagerSingleton.instance.SetHealthBar(currentHealth / (float)maxHealth);
     }
 
-    public void InitializeHealth(int healthValue)
+    public void InitializeHealth()
     {
-        currentHealth = healthValue/2;
-        maxHealth = healthValue;
+        currentHealth = maxHealth;
         isDead = false;
         UpdateBar();
     }
@@ -42,7 +41,7 @@ public class PlayerHealth : MonoBehaviour
         {
             OnDeathWithReference?.Invoke(sender);
             isDead = true;
-            UIManagerSingleton.Instance.GameOver();
+            UIManagerSingleton.instance.GameOver();
         }
         UpdateBar(); 
     }

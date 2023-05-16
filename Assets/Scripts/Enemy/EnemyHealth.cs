@@ -11,10 +11,9 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField]
     private bool isDead = false;
 
-    public void InitializeHealth(int healthValue)
+    public void InitializeHealth()
     {
-        currentHealth = healthValue / 2;
-        maxHealth = healthValue;
+        currentHealth = maxHealth;
         isDead = false;
     }
 

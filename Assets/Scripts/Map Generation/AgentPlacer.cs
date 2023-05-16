@@ -10,28 +10,25 @@ public class AgentPlacer : MonoBehaviour
     [SerializeField]
     private GameObject enemyPrefab, playerPrefab;
 
-
     [SerializeField] public int minRoomEnemyCount;
     [SerializeField] public int maxRoomEnemyCount;
 
-    [SerializeField] MapData dungeonData;
-
-    [SerializeField]
-    private bool showGizmo = false;
+    [SerializeField] MapData mapData;
 
     public void PlaceAgents()
     {
-        if (dungeonData == null)
+        if (mapData == null)
             return;
 
-        minRoomEnemyCount = LevelsManager.Instance.MinEnemies;
-        maxRoomEnemyCount = LevelsManager.Instance.MaxEnemies;
-        //Loop for each room
-        for (int i = 0; i < dungeonData.Rooms.Count; i++)
+        minRoomEnemyCount = LevelsManager.instance.MinEnemies;
+        maxRoomEnemyCount = LevelsManager.instance.MaxEnemies;
+
+        for (int i = 0; i < mapData.Rooms.Count; i++)
         {
-            switch (dungeonData.Rooms[i].RoomType)
+            switch (mapData.Rooms[i].RoomType)
             {
                 case RoomTypes.Starting:
+                    Debug.Log("Bruh");
                     if (playerPrefab)
                     {
                         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -39,24 +36,18 @@ public class AgentPlacer : MonoBehaviour
                         {
                             player = Instantiate(playerPrefab);
                         }
-                        player.transform.localPosition = dungeonData.Rooms[i].RoomCenterPos + Vector2.one * 0.5f;
+                        player.transform.localPosition = mapData.Rooms[i].RoomCenterPos + Vector2.one * 0.5f;
                     }
                     break;
 
                 case RoomTypes.Normal:
-                    //TO place eneies we need to analyze the room tiles to find those accesible from the path
-                    Room room = dungeonData.Rooms[i];
+                    Room room = mapData.Rooms[i];
                     TileGraph roomGraph = new TileGraph(room.FloorTiles);
 
-                    //Find the Path inside this specific room
                     HashSet<Vector2Int> roomFloor = new HashSet<Vector2Int>(room.FloorTiles);
-                    //Find the tiles belonging to both the path and the room
-                    roomFloor.IntersectWith(dungeonData.Paths.SelectMany(floors => floors.FloorTiles).ToHashSet());
+                    roomFloor.IntersectWith(mapData.Paths.SelectMany(floors => floors.FloorTiles).ToHashSet());
 
-                    //Run the BFS to find all the tiles in the room accessible from the path
                     Dictionary<Vector2Int, Vector2Int> roomMap = roomGraph.GetReachableTilesBFS(roomFloor.First(), room.PropPositions);
-
-                    //Positions that we can reach + path == positions where we can place enemies
                     room.PositionsAccessibleFromPath = roomMap.Keys.OrderBy(x => Random.Range(0f, 6f)).ToList();
 
                     PlaceEnemies(room, Random.Range(minRoomEnemyCount,maxRoomEnemyCount));
@@ -66,11 +57,6 @@ public class AgentPlacer : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Places enemies in the positions accessible from the path
-    /// </summary>
-    /// <param name="room"></param>
-    /// <param name="enemysCount"></param>
     private void PlaceEnemies(Room room, int enemysCount)
     {
         for (int k = 0; k < enemysCount; k++)
@@ -82,23 +68,6 @@ public class AgentPlacer : MonoBehaviour
             GameObject enemy = Instantiate(enemyPrefab);
             enemy.transform.localPosition = (Vector2)room.PositionsAccessibleFromPath[k] + Vector2.one * 0.5f;
             room.EnemiesInTheRoom.Add(enemy);
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (dungeonData == null || showGizmo == false)
-            return;
-        foreach (Room room in dungeonData.Rooms)
-        {
-            Color color = Color.green;
-            color.a = 0.3f;
-            Gizmos.color = color;
-
-            foreach (Vector2Int pos in room.PositionsAccessibleFromPath)
-            {
-                Gizmos.DrawCube((Vector2)pos + Vector2.one * 0.5f, Vector2.one);
-            }
         }
     }
 }
@@ -136,7 +105,7 @@ public class TileGraph
 
     public Dictionary<Vector2Int, int> GetWeightedBFS(Vector2Int startPos, HashSet<Vector2Int> occupiedTiles)
     {
-        //BFS related variuables
+
         Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
         tilesToVisit.Enqueue(startPos);
 
@@ -148,15 +117,12 @@ public class TileGraph
 
         while (tilesToVisit.Count > 0)
         {
-            //get the data about specific position
             Vector2Int node = tilesToVisit.Dequeue();
             List<Vector2Int> neighbours = graph[node];
             int currentWeight = graphPositionWeight[node];
 
-            //loop through each neighbour position
             foreach (Vector2Int neighbourPosition in neighbours)
             {
-                //add the neighbour position to our map if it is valid
                 if (!visitedTiles.Contains(neighbourPosition)  &&
                     !occupiedTiles.Contains(neighbourPosition))
                 {
@@ -169,36 +135,31 @@ public class TileGraph
 
         return graphPositionWeight;
     }
-    /// <summary>
-    /// Creates a map of reachable tiles in our dungeon.
-    /// </summary>
-    /// <param name="startPos">Door position or tile position on the path between rooms inside this room</param>
-    /// <param name="occupiedTiles"></param>
-    /// <returns></returns>
     public Dictionary<Vector2Int, Vector2Int> GetReachableTilesBFS(Vector2Int startPos, HashSet<Vector2Int> occupiedTiles)
     {
-        //BFS related variuables
         Queue<Vector2Int> nodesToVisit = new Queue<Vector2Int>();
         nodesToVisit.Enqueue(startPos);
 
-        HashSet<Vector2Int> visitedNodes = new HashSet<Vector2Int>();
-        visitedNodes.Add(startPos);
+        HashSet<Vector2Int> visitedNodes = new HashSet<Vector2Int>
+        {
+            startPos
+        };
 
         //The dictionary that we will return 
-        Dictionary<Vector2Int, Vector2Int> map = new Dictionary<Vector2Int, Vector2Int>();
-        map.Add(startPos, startPos);
+        Dictionary<Vector2Int, Vector2Int> map = new Dictionary<Vector2Int, Vector2Int>
+        {
+            { startPos, startPos }
+        };
 
 
         while (nodesToVisit.Count > 0)
         {
-            //get the data about specific position
             Vector2Int node = nodesToVisit.Dequeue();
             List<Vector2Int> neighbours = graph[node];
 
             //loop through each neighbour position
             foreach (Vector2Int neighbourPosition in neighbours)
             {
-                //add the neighbour position to our map if it is valid
                 if (visitedNodes.Contains(neighbourPosition) == false &&
                     occupiedTiles.Contains(neighbourPosition) == false)
                 {

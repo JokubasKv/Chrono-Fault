@@ -17,10 +17,7 @@ public class RoomDataExtractor : MonoBehaviour
     public UnityEvent OnFinishedRoomProcessing;
 
     Dictionary<Vector2Int, int> weightedTiles = new Dictionary<Vector2Int, int>(); 
-    private void Awake()
-    {
 
-    }
     public void ProcessRooms()
     {
         if (dungeonData == null)
@@ -76,8 +73,6 @@ public class RoomDataExtractor : MonoBehaviour
 
     private void SetupRoomTypes()
     {
-        
-
         dungeonData.CombineAllFloorTiles();
 
         TileGraph tileGraph = new TileGraph(dungeonData.AllFloorTiles);
@@ -87,7 +82,6 @@ public class RoomDataExtractor : MonoBehaviour
             .Where(entry => dungeonData.Rooms.Any(room => room.RoomCenterPos == entry.Key))
             .OrderByDescending(entry => entry.Value)
             .FirstOrDefault();
-        //Debug.Log(result.Value);
 
         dungeonData.Rooms
             .Where(room => room.RoomCenterPos == result.Key)
@@ -105,79 +99,6 @@ public class RoomDataExtractor : MonoBehaviour
                 unnasigned = false;
             }
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (dungeonData == null || showGizmo == false)
-            return;
-        /*foreach (Room room in dungeonData.Rooms)
-        {
-            //Draw inner tiles
-            Gizmos.color = Color.yellow;
-            foreach (Vector2Int floorPosition in room.InnerTiles)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                {
-                    Debug.Log(floorPosition);
-                    continue;
-                }
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-            //Draw near wall tiles UP
-            Gizmos.color = Color.blue;
-            foreach (Vector2Int floorPosition in room.NearWallTilesUp)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                    continue;
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-            //Draw near wall tiles DOWN
-            Gizmos.color = Color.green;
-            foreach (Vector2Int floorPosition in room.NearWallTilesDown)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                    continue;
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-            //Draw near wall tiles RIGHT
-            Gizmos.color = Color.white;
-            foreach (Vector2Int floorPosition in room.NearWallTilesRight)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                    continue;
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-            //Draw near wall tiles LEFT
-            Gizmos.color = Color.cyan;
-            foreach (Vector2Int floorPosition in room.NearWallTilesLeft)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                    continue;
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-            //Draw near wall tiles CORNERS
-            Gizmos.color = Color.magenta;
-            foreach (Vector2Int floorPosition in room.CornerTiles)
-            {
-                if (dungeonData.Paths.All(floors => floors.FloorTiles.Contains(floorPosition)))
-                    continue;
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-        }
-        foreach (Path path in dungeonData.Paths)
-        {
-            Gizmos.color = Color.black;
-            foreach (Vector2Int floorPosition in path.FloorTiles)
-            {
-                Gizmos.DrawCube(floorPosition + Vector2.one * 0.5f, Vector2.one);
-            }
-        }*/
-        /*foreach (var item in weightedTiles)
-        {
-            Handles.Label(new Vector3(item.Key.x, item.Key.y, 0), item.Value.ToString());
-        }*/
-        
     }
 }
 

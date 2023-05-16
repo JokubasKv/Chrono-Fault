@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12484aa6e50042d4887b0cb33ba7b72e, type: 3}
   m_Name: Prop_TrashCan
   m_EditorClassIdentifier: 
-  PropSprite: {fileID: 1550976570, guid: 9ac4743dbff6dbc46bd50c3a66b33d8c, type: 3}
+  PropPrefab: {fileID: 6936246898487812422, guid: 59d3df60043500d4c88b1a697607a73a, type: 3}
   PropSize: {x: 1, y: 1}
   Corner: 1
   NearWallUP: 1

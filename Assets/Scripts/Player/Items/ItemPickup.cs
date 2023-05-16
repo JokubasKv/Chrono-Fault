@@ -46,11 +46,14 @@ public class ItemPickup : MonoBehaviour
             if (i.item.GetType() == item.GetType())
             {
                 i.stacks += 1;
-                UIManagerSingleton.Instance.UpdateItemSlotsUi(player.items);
+                UIManagerSingleton.instance.DisplayItem(i);
+                UIManagerSingleton.instance.UpdateItemSlotsUi(player.items);
                 return;
             }
         }
-        player.items.Add(new ItemList(item, data, 1));
-        UIManagerSingleton.Instance.UpdateItemSlotsUi(player.items);
+        var itemListItem = new ItemList(item, data, 1);
+        player.items.Add(itemListItem);
+        UIManagerSingleton.instance.DisplayItem(itemListItem);
+        UIManagerSingleton.instance.UpdateItemSlotsUi(player.items);
     }
 }

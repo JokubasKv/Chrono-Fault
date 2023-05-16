@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// Stores all the data about our dungeon.
-/// Useful when creating a save / load system
-/// </summary>
 public class MapData : MonoBehaviour
 {
     public List<Room> Rooms { get; set; } = new List<Room>();
@@ -54,9 +50,6 @@ public class MapData : MonoBehaviour
 }
 
 
-/// <summary>
-/// Holds all the data about the room
-/// </summary>
 public class Room
 {
     public RoomTypes RoomType { get; set; } = RoomTypes.Normal;
@@ -85,9 +78,6 @@ public class Room
     }
 }
 
-/// <summary>
-/// Holds all the data about the connecting paths
-/// </summary>
 public class Path
 {
     public HashSet<Vector2Int> FloorTiles { get; private set; } = new HashSet<Vector2Int>();

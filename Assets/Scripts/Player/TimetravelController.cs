@@ -61,16 +61,14 @@ public class TimetravelController : MonoBehaviour
 
     IEnumerator MovePlayer(Vector2Int newPosition, float delayTime)
     {
-        UIManagerSingleton.Instance.TimeTravelFlashOnce(delayTime * 2);
+        UIManagerSingleton.instance.TimeTravelFlashOnce(delayTime * 2);
         yield return new WaitForSeconds(delayTime);
         transform.position = new Vector3(newPosition.x, newPosition.y) + new Vector3(0.5f, 0.5f);
-
     }
 
     public Vector2Int GetNearestCoordinates(MapData mapData, Vector2Int targetPoint)
     {
         List<Vector2Int> coordinates = new List<Vector2Int>(mapData.AllFloorTiles);
-        //Debug.Log(string.Join(", ", coordinates.Select(v => v.ToString())));
 
         Dictionary<Vector2Int, float> distances = new Dictionary<Vector2Int, float>();
 
@@ -81,7 +79,6 @@ public class TimetravelController : MonoBehaviour
             distances.Add(coordinate, distance);
         }
 
-        // Sort coordinates by distance
         var sortedDistances = distances.OrderBy(x => x.Value);
 
         return sortedDistances.Select(v => v.Key).First();

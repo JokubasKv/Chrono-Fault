@@ -15,12 +15,7 @@ public class LevelsManager : MonoSingleton<LevelsManager>
     [SerializeField] public float EnemyHealth = 10;
     [SerializeField] public int MinEnemies = 0;
     [SerializeField] public int MaxEnemies = 10;
-
-    public override void Init()
-    {
-        base.Init();
-        DontDestroyOnLoad(gameObject);
-    }
+    private int currentLevel = 1;
 
     public void ResetGame()
     {
@@ -31,6 +26,8 @@ public class LevelsManager : MonoSingleton<LevelsManager>
 
     public void NextLevel()
     {
+        currentLevel++;
+
         corridorCount+=2;
 
         EnemyHealth += 10;
@@ -41,5 +38,11 @@ public class LevelsManager : MonoSingleton<LevelsManager>
         SceneManager.LoadScene("SampleScene");
     }
 
+    protected override void InternalInit()
+    {
+    }
 
+    protected override void InternalOnDestroy()
+    {
+    }
 }

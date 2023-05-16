@@ -38,7 +38,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Turn Back Time Parameters")]
     [SerializeField] float rewindIntensity = 0.02f;
-    [SerializeField] AudioSource rewindSound;
     bool isRewinding = false;
     bool rewindPressed = false;
     float rewindValue = 0;
@@ -50,15 +49,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float bulletCount = 1.0f;
     private float shootTimer = 0f;
     private float standStillTimer = 0f;
-
+    private float standStillTickTimer = 0f;
 
     [Header("Items")]
     public List<ItemList> items = new();
 
-
-
-
-    
     private bool FacingRight = true;
 
 
@@ -69,7 +64,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<PlayerHealth>();
         rewindManager = FindObjectOfType<RewindManager>();
-        health.InitializeHealth(100);
+        health.InitializeHealth();
         currentSetSpeed = walkSpeed;
 
         rotationPointRb2d = rotationPoint.GetComponent<Rigidbody2D>();
@@ -117,7 +112,8 @@ public class PlayerController : MonoBehaviour
     void OnLevelWasLoaded()
     {
         if(items.Count != 0)
-            UIManagerSingleton.Instance.UpdateItemSlotsUi(items);
+            UIManagerSingleton.instance.UpdateItemSlotsUi(items);
+        health.UpdateBar();
     }
 
     #region - Update/FixedUpdate -
@@ -143,9 +139,14 @@ public class PlayerController : MonoBehaviour
         if (input_Movement == Vector2.zero)
         {
             standStillTimer += Time.fixedDeltaTime;
+            standStillTickTimer += Time.fixedDeltaTime;
             if(standStillTimer >= 2f)
             {
-
+                if (standStillTickTimer >= 0.5f)
+                {
+                    CallItemOnStandStill();
+                    standStillTickTimer = 0;
+                }
             }
         }
         else
@@ -258,8 +259,7 @@ public class PlayerController : MonoBehaviour
             if (!isRewinding)
             {
                 rewindManager.StartRewindTimeBySeconds(rewindValue);
-                UIManagerSingleton.Instance.TimeTravelImageStart(1f);
-                //rewindSound.Play();
+                UIManagerSingleton.instance.TimeTravelImageStart(1f);
             }
             else
             {
@@ -273,8 +273,7 @@ public class PlayerController : MonoBehaviour
             if (isRewinding)
             {
                 rewindManager.StopRewindTimeBySeconds();
-                UIManagerSingleton.Instance.TimeTravelImageStop(1f);
-                //rewindSound.Stop();
+                UIManagerSingleton.instance.TimeTravelImageStop(1f);
                 rewindValue = 0;
                 isRewinding = false;
             }
@@ -297,7 +296,7 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
-        if (UIManagerSingleton.Instance.paused)
+        if (UIManagerSingleton.instance.paused)
         {
             return;
         }
@@ -317,13 +316,13 @@ public class PlayerController : MonoBehaviour
     #region - UI -
     private void EscapePressed()
     {
-        if (UIManagerSingleton.Instance.paused)
+        if (UIManagerSingleton.instance.paused)
         {
-            UIManagerSingleton.Instance.UnpauseGame();
+            UIManagerSingleton.instance.UnpauseGame();
         }
         else
         {
-            UIManagerSingleton.Instance.PauseGame();
+            UIManagerSingleton.instance.PauseGame();
         }
     }
     #endregion
